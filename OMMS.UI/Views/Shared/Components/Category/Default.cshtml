@@ -1,0 +1,15 @@
+﻿@model List<CategoryVM>
+@foreach (var category in Model)
+{
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            @if (category.ParentId==0)
+            {
+                <span>@category.Name</span>
+                <ul class="dropdown-menu">
+                   `
+                </ul>
+            }
+        </button>
+    </div>
+}
