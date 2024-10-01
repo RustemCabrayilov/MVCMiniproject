@@ -302,6 +302,7 @@ namespace OMMS.DAL.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("AppUserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
@@ -313,10 +314,6 @@ namespace OMMS.DAL.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Surname")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -374,15 +371,17 @@ namespace OMMS.DAL.Migrations
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
-                    b.Property<int>("EmployeeId")
+                    b.Property<int?>("EmployeeId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("MonthlyPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("Terms")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Terms")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -517,6 +516,9 @@ namespace OMMS.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("BranchId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Brand")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -547,6 +549,8 @@ namespace OMMS.DAL.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BranchId");
 
                     b.HasIndex("CategoryId");
 
@@ -672,7 +676,9 @@ namespace OMMS.DAL.Migrations
                 {
                     b.HasOne("OMMS.DAL.Entities.AppUser", "AppUser")
                         .WithMany()
-                        .HasForeignKey("AppUserId");
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("AppUser");
                 });
@@ -699,16 +705,14 @@ namespace OMMS.DAL.Migrations
             modelBuilder.Entity("OMMS.DAL.Entities.Loan", b =>
                 {
                     b.HasOne("OMMS.DAL.Entities.Customer", "Customer")
-                        .WithMany()
+                        .WithMany("Loans")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("OMMS.DAL.Entities.Employee", "Employee")
                         .WithMany()
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("EmployeeId");
 
                     b.Navigation("Customer");
 
@@ -769,11 +773,19 @@ namespace OMMS.DAL.Migrations
 
             modelBuilder.Entity("OMMS.DAL.Entities.Product", b =>
                 {
+                    b.HasOne("OMMS.DAL.Entities.Branch", "Branch")
+                        .WithMany("Products")
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("OMMS.DAL.Entities.Category", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Branch");
 
                     b.Navigation("Category");
                 });
@@ -790,6 +802,13 @@ namespace OMMS.DAL.Migrations
                     b.Navigation("Categories");
 
                     b.Navigation("Employees");
+
+                    b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("OMMS.DAL.Entities.Customer", b =>
+                {
+                    b.Navigation("Loans");
                 });
 
             modelBuilder.Entity("OMMS.DAL.Entities.Employee", b =>

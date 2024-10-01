@@ -7,7 +7,7 @@ using OMMS.UI.Models;
 
 namespace OMMS.UI.Controllers
 {
-    [Authorize(Roles ="Admin,Merchant")]
+  
     public class MerchantsController : Controller
     {
         private readonly IGenericRepository<Merchant> _merchantRepository;
@@ -34,7 +34,8 @@ namespace OMMS.UI.Controllers
             }
             return View(models);
         }
-        public IActionResult Create()
+		[Authorize(Roles = "Admin")]
+		public IActionResult Create()
         {
             string userId = _userManager.GetUserId(User);
             MerchantVM model = new()
@@ -55,9 +56,6 @@ namespace OMMS.UI.Controllers
                 };
                 await _merchantRepository.Create(merchant);
                 await _merchantRepository.SaveAsync();
-
-
-
                 return RedirectToAction("Index", "Home");
            
         }

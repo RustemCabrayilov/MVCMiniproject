@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OMMS.DAL.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,10 +12,11 @@ namespace OMMS.DAL.Entities
         public string Title { get; set; }
         public decimal MonthlyPrice { get; set; }
         public decimal TotalPrice { get; set; }
-        public string Terms { get; set; }
+        public int Terms { get; set; }
         public int CustomerId { get; set; }
         public Customer Customer { get; set; }
-        public int EmployeeId { get; set; }
-        public Employee Employee { get; set; }
+        public int? EmployeeId { get; set; }
+        public Employee? Employee { get; set; }
+        public Status Status { get; set; }
     }
 }

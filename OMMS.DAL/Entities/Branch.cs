@@ -17,5 +17,6 @@ namespace OMMS.DAL.Entities
         public AppUser AppUser { get; set; }
         public List<Category> Categories { get; set; }
         public List<Employee> Employees { get; set; }
+        public List<Product> Products { get; set; }
     }
 }

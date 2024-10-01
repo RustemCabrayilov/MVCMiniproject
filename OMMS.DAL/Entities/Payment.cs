@@ -13,5 +13,7 @@ namespace OMMS.DAL.Entities
         public string PaymentType { get; set; }
         public int LoanId { get; set; }
         public Loan Loan { get; set; }
+        public Customer Customer { get; set; }
+        public int CustomerId { get; set; }
     }
 }

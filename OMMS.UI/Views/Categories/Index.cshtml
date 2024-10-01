@@ -1,0 +1,19 @@
+﻿@model List<CategoryVM>
+
+@foreach (var item in Model)
+{
+    <div  class="card" style="width: 18rem;">
+        <div class="card-body">
+            @* <img width="100%" height="200px" src="@Url.Content($"~/{item.Thumbnail}")" alt="Alternate Text" /> *@
+
+            @if (item.Level==3)
+            {
+                <a class="text-decoration-none" asp-controller="Products" asp-action="Index" asp-route-categoryId="@item.Id"> <h5 class="card-title">@item.Name</h5></a>
+            }
+            else
+            {
+                <a class="text-decoration-none" asp-controller="Categories" asp-action="Index" asp-route-parentId="@item.Id"> <h5 class="card-title">@item.Name</h5></a>
+            }
+        </div>
+    </div>
+}

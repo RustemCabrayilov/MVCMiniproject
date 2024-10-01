@@ -1,0 +1,85 @@
+﻿/* Custom CSS for dropdowns */
+/* Global Styles */
+/* Main container */
+.category-container {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+/* Main dropdown button */
+.dropdown-toggle {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+    .dropdown-toggle:hover {
+        background-color: #0056b3;
+    }
+
+/* Dropdown menu */
+.dropdown-menu {
+    display: none; /* Initially hidden */
+    position: absolute;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    border-radius: 5px;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    width: 300px;
+}
+
+    /* Subcategories styling */
+    .dropdown-menu ul {
+        list-style-type: none;
+        padding-left: 0;
+        margin: 0;
+    }
+
+        .dropdown-menu ul li {
+            margin: 10px 0;
+        }
+
+    /* Links inside the dropdown */
+    .dropdown-menu a {
+        text-decoration: none;
+        color: #333;
+        font-size: 14px;
+        padding: 5px 10px;
+        display: block;
+        border-radius: 3px;
+    }
+
+        .dropdown-menu a:hover {
+            background-color: #f1f1f1;
+            color: #007bff;
+        }
+
+    /* Nested dropdowns for level 2 categories */
+    .dropdown-menu .nested-menu {
+        display: none;
+        margin-top: 10px;
+        background-color: #f9f9f9;
+        padding: 10px;
+        border-left: 3px solid #007bff;
+    }
+
+    /* Show sub-menus when hovering */
+    .dropdown-menu ul li:hover .nested-menu {
+        display: block;
+    }
+
+/* Show the dropdown on hover */
+.dropdown:hover .dropdown-menu {
+    display: block;
+}
+

@@ -9,6 +9,7 @@
 
 
 <form asp-action="Create" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row">
         <div class="col-md-6">
@@ -17,7 +18,7 @@
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-        </div> 
+        </div>
         <div class="col-md-6">
             <div class="form-group">
                 <label asp-for="CategoryId" class="control-label">Categories</label>
@@ -28,7 +29,18 @@
                 </select>
                 <span asp-validation-for="CategoryId" class="text-danger"></span>
             </div>
-        </div> 
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label asp-for="BranchId" class="control-label">Categories</label>
+                <select asp-for="BranchId"
+                        class="form-control"
+                        asp-items="@(new SelectList(Model.Branchs, nameof(Model.Id), nameof(Model.Name)))">
+                    <option>Please select one</option>
+                </select>
+                <span asp-validation-for="BranchId" class="text-danger"></span>
+            </div>
+        </div>
         <div class="col-md-6">
             <div class="form-group">
                 <label asp-for="Price" class="control-label"></label>

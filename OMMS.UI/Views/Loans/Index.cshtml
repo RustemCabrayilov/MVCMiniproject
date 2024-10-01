@@ -1,0 +1,12 @@
+﻿<link rel="stylesheet"
+	  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+@model List<LoanVM>
+@foreach (var loan in Model)
+{
+	<div class="pt-3 w-25 mt-5">
+		<h4 class="red mt-2">@loan.Title</h4>
+		<p>Count:@loan.Count </p>
+		<p>Status: @loan.Status</p>
+		<p>Total : @loan.Price <i class="fa-solid fa-dollar-sign"></i></p>
+	</div>
+}

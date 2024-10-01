@@ -16,17 +16,19 @@ namespace OMMS.UI.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var items = await GetItemsAsync();
+            var categories = await GetItemsAsync();
             List<CategoryVM> models = new();
-            foreach (var item in items)
+            foreach (var category in categories)
             {
 
-                var parentCategory =  items.Where(c=>c.Id==item.ParentId).ToList();
+                var subCategories =  categories.Where(c=>c.ParentId == category.Id).ToList();
                 models.Add(new()
                 {
-                    Name = item.Name,
-                    Level = item.Level,
-                    ParentId = item.ParentId,
+                    Id=category.Id,
+                    Name = category.Name,
+                    Level = category.Level,
+                    ParentId = category.ParentId,
+                    Categories = subCategories
                 });
             }
             return View(models);

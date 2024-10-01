@@ -47,7 +47,7 @@
 					@item.Id
 				</td>
 				<td>
-				<th><img width="150px" height="100px" src="@Url.Content($"~/{item.Thumbnail}")" alt="Alternate Text" /></th></td>
+				<img width="140px" height="100px" src="@Url.Content($"~/{item.Thumbnail}")" alt="Alternate Text" /></td>
 				<td>
 					@item.Name
 				</td>
@@ -55,22 +55,22 @@
 					@item.CategoryId
 				</td>
 				<td>
-					@item.CategoryName)
+					@item.CategoryName
 				</td>
 				<td>
-					@item.Price)
+					@item.Price
 				</td>
 				<td>
-					@item.Description)
+					@item.Description
 				</td>
 				<td>
-					@item.Count)
+					@item.Count
 				</td>
 				<td>
-					@item.Model)
+					@item.Model
 				</td>
 				<td>
-					@item.Brand)
+					@item.Brand
 				</td>
 				<td>
 					<a class="btn btn-warning" asp-area="admin" asp-controller="Products" asp-action="Edit" asp-route-id="@item.Id">

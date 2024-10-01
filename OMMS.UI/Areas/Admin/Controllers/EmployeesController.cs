@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using OMMS.DAL.Entities;
 using OMMS.DAL.Repository.Interface;
@@ -7,6 +8,7 @@ using OMMS.UI.Models;
 namespace OMMS.UI.Areas.Admin.Controllers
 {
 	[Area("Admin")]
+	[Authorize(Roles = "Admin,Branch")]
 	public class EmployeesController : Controller
 	{
 
@@ -20,9 +22,25 @@ namespace OMMS.UI.Areas.Admin.Controllers
 			_branchRepository = branchRepository;
 		}
 
-		public IActionResult Index()
+		public async Task<IActionResult> Index()
 		{
-			return View();
+			List<EmployeeVM> models = new();
+			var employees = await _employeeRepository.GetAll();
+			foreach (var employee in employees.ToList())
+			{
+				var branch = await _branchRepository.Get(employee.BranchId);
+				var user = await _userManager.FindByIdAsync(employee.AppUserId);
+				models.Add(new()
+				{
+					Id = employee.Id,
+					Name = employee.Name,
+					Surname = employee.Surname,
+					Position = employee.Position,
+					BranchName = branch.Name,
+					UserName = user.UserName
+				});
+			}
+			return View(models);
 		}
 		public async Task<IActionResult> Create()
 		{
@@ -51,5 +69,57 @@ namespace OMMS.UI.Areas.Admin.Controllers
 			await _employeeRepository.SaveAsync();
 			return RedirectToAction("Index", "Home");
 		}
+		public async Task<IActionResult> Edit(int Id)
+		{
+			var employee = await _employeeRepository.Get(Id);
+			var branchs = await _branchRepository.GetAll();
+			var users = _userManager.Users.ToList();
+			EmployeeVM model = new()
+			{
+				Name = employee.Name,
+				Surname = employee.Surname,
+				Position = employee.Position,
+				Branchs = branchs.ToList(),
+				Users = users
+			};
+			return View(model);
+		}
+		[HttpPost]
+		public async Task<IActionResult> Edit(EmployeeVM model, int id)
+		{
+			var employee = await _employeeRepository.Get(id);
+			employee.Name = model.Name;
+			employee.Surname = model.Surname;
+			employee.Position = model.Position;
+			employee.BranchId = model.BranchId;
+			employee.AppUserId = model.AppUserId;
+			_employeeRepository.Update(employee);
+			_employeeRepository.Save();
+			return RedirectToAction("Index");
+		}
+		public async Task<IActionResult> Delete(int Id)
+		{
+			var employee = await _employeeRepository.Get(Id);
+			var branch = await _branchRepository.Get(employee.BranchId);
+			var user = await _userManager.FindByIdAsync(employee.AppUserId);
+			EmployeeVM model = new()
+			{
+				Name = employee.Name,
+				Surname = employee.Surname,
+				Position = employee.Position,
+				BranchName = branch.Name,
+				UserName = user.UserName
+			};
+			return View(model);
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> Delete(EmployeeVM model, int id)
+		{
+			_employeeRepository.Remove(id);
+			_employeeRepository.Save();
+			return RedirectToAction("Index");
+		}
 	}
 }
+

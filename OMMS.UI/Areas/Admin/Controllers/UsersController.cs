@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OMMS.DAL.Entities;
 using OMMS.UI.Models;
 
 namespace OMMS.UI.Area.Admin
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class UsersController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
@@ -39,13 +42,56 @@ namespace OMMS.UI.Area.Admin
             }
             return View(userVM);
         }
+        public async Task<IActionResult> Edit(string Id)
+        {
+            var user = await _userManager.FindByIdAsync(Id);
+            UserVM model = new()
+            {
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                UserName = user.UserName,
+            };
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Edit(UserVM model)
+        {
+            var user = await _userManager.FindByIdAsync(model.Id);
+            user.Email = model.Email;
+            user.PhoneNumber = model.PhoneNumber;
+            user.UserName = model.UserName;
+
+            await _userManager.UpdateAsync(user);
+            return RedirectToAction("Index");
+        }
+        public async Task<IActionResult> Delete(string Id)
+        {
+            var user = await _userManager.FindByIdAsync(Id);
+            UserVM model = new()
+            {
+                Id = user.Id,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                UserName = user.UserName,
+
+            };
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Delete(UserVM model, string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            await _userManager.DeleteAsync(user);
+
+            return RedirectToAction("Index");
+        }
         public async Task<IActionResult> AssignRole(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
             var roles = _roleManager.Roles.ToList();
             UserRoleVM model = new()
             {
-                Roles =new List<RoleVM>()
+                Roles = new List<RoleVM>()
             };
             model.UserName = user.UserName;
             model.UserId = userId;
@@ -71,7 +117,7 @@ namespace OMMS.UI.Area.Admin
                 await _signInManager.RefreshSignInAsync(user);
                 return RedirectToAction("Index");
             }
-            return View();
+            return View(model);
         }
     }
 }

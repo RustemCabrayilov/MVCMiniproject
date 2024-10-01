@@ -16,5 +16,6 @@ namespace OMMS.UI.Models
 		public int EmployeeId { get; set; }
 		public string EmployeeName { get; set; }
 		public List<Employee> Employees { get; set; }
-	}
+        public string SearchCategory { get; set; }
+    }
 }

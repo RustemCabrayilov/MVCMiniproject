@@ -9,6 +9,9 @@ namespace OMMS.UI.Models
 		public int CategoryId { get; set; }
 		public string CategoryName { get; set; }
         public List<Category> Categories { get; set; }
+		public int BranchId { get; set; }
+		public string BranchName { get; set; }
+        public List<Branch> Branchs { get; set; }
         public decimal Price { get; set; }
 		public string Description { get; set; }
 		public int Count { get; set; }
@@ -16,5 +19,7 @@ namespace OMMS.UI.Models
 		public string Brand { get; set; }
         public IFormFile[] ImageFiles { get; set; }
         public string Thumbnail { get; set; }
+        public List<ProductImage> ProductImages { get; set; }
+
     }
 }

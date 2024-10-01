@@ -17,6 +17,8 @@ namespace OMMS.UI.Models
         [Required]
         [Compare(nameof(Password), ErrorMessage = "Enter same password")]
         public string ConfirmPassword { get; set; }
+        [Required]
+        public string PhoneNumber {  get; set; }
         public bool Persistent { get; set; }
     }
 }

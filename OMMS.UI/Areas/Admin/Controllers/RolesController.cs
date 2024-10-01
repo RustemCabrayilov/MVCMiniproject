@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using OMMS.DAL.Entities;
-using OMMS.DAL.Entities;
 using OMMS.UI.Models;
+using System.Data;
 
 namespace OMMS.UI.Area.Admin
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class RolesController : Controller
     {
         private readonly RoleManager<AppRole> _roleManager;
@@ -46,7 +48,44 @@ namespace OMMS.UI.Area.Admin
             {
                 return RedirectToAction("Index");
             }
-            return View();
+            return View(model);
         }
-    }
+		public async Task<IActionResult> Delete(string Id)
+		{
+            var role = await _roleManager.FindByIdAsync(Id);
+			RoleVM model = new()
+			{
+				Id = role.Id,
+				Name = role.Name
+			};
+
+			return View(model);
+		}
+		[HttpPost]
+		public async Task<IActionResult> Delete(RoleVM model,string id)
+		{
+            var role =await _roleManager.FindByIdAsync(id);
+			await _roleManager.DeleteAsync(role);
+		
+			return RedirectToAction("Index");
+		}
+        public async Task<IActionResult> Edit(string Id)
+		{
+            var role = await _roleManager.FindByIdAsync(Id);
+			RoleVM model = new()
+			{
+				Name = role.Name
+			};
+
+			return View(model);
+		}
+		[HttpPost]
+		public async Task<IActionResult> Edit(RoleVM model,string id)
+		{
+            var role =await _roleManager.FindByIdAsync(id);
+            role.Name=model.Name;
+			await _roleManager.UpdateAsync(role);
+			return RedirectToAction("Index");
+		}
+	}
 }

@@ -11,9 +11,10 @@ namespace OMMS.DAL.Repository.Interface
 		Task<T> Create(T entity);
 		T Update(T entity);
 		T Remove(int id);
-		Task<T> Get(int id);
+		Task<T> Get(int id,params string[] includes);
 		Task<IQueryable<T>> GetAll();
 		Task SaveAsync();
+		void Save();
 
 	}
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using OMMS.DAL.Entities;
 using OMMS.DAL.Repository.Interface;
@@ -7,6 +8,7 @@ using OMMS.UI.Models;
 namespace OMMS.UI.Areas.Admin.Controllers
 {
 	[Area("Admin")]
+	[Authorize(Roles ="Admin,Employee")]
 	public class CategoriesController : Controller
 	{
 		private readonly IGenericRepository<Category> _categoryRepository;
@@ -25,7 +27,7 @@ namespace OMMS.UI.Areas.Admin.Controllers
 
 		public async Task<IActionResult> Index()
 		{
-			var categories = await _categoryRepository.GetAll();
+			var categories = (await _categoryRepository.GetAll()).ToList();
 			List<CategoryVM> models = new();
 			foreach (var model in categories)
 			{
@@ -39,7 +41,7 @@ namespace OMMS.UI.Areas.Admin.Controllers
 					BranchName = branch.Name,
 					EmployeeName = employee.Name,
 					Level = model.Level,
-					ParentCategory = parentCategory.Name,
+					ParentCategory = model.ParentId!=0?parentCategory.Name:"No parent category",
 
 				});
 			}

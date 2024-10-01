@@ -27,11 +27,21 @@ namespace OMMS.DAL.Repository
 			return entity;
 		}
 
-		public async Task<T> Get(int id)
+		public async Task<T> Get(int id,params string[] includes)
 		{
-			var entity = await _dbSet.FindAsync(id);
-			return entity;
-		}
+		/*	var entity = await _dbSet.FindAsync(id);
+			return entity;*/
+            var query = _dbSet.Where(x => x.Id == id).AsQueryable();
+
+            if (includes is not null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+            return await query.FirstOrDefaultAsync(x => x.Id == id);
+        }
 
 		public async Task<IQueryable<T>> GetAll()
 		{
@@ -54,6 +64,10 @@ namespace OMMS.DAL.Repository
 		public async Task SaveAsync()
 		{
 			await _dbContext.SaveChangesAsync();
+		}
+		public void Save()
+		{
+			 _dbContext.SaveChanges();
 		}
 	}
 }

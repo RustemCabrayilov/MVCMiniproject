@@ -16,7 +16,7 @@ namespace OMMS.UI
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             // Add services to the container.
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
             builder.Services.AddDbContext<OMMSDbContext>(
                 opts=>opts.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnectionString")));
             builder.Services.AddIdentity<AppUser, AppRole>(opts =>
@@ -64,7 +64,7 @@ namespace OMMS.UI
             app.UseAuthorization();
             app.MapControllerRoute(
                       name: "areas",
-                      pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+                      pattern: "{area:exists}/{controller=Account}/{action=LogIn}/{id?}"
                     );
             app.MapControllerRoute(
                 name: "default",

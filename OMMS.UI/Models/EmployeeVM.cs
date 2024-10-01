@@ -12,5 +12,7 @@ namespace OMMS.UI.Models
 		public string BranchName { get; set; }
         public List<Branch> Branchs { get; set; }
         public string AppUserId { get; set; }
+        public string UserName { get; set; }
+        public List<AppUser> Users { get; set; }
 	}
 }
