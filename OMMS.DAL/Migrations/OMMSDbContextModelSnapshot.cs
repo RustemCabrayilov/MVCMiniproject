@@ -236,6 +236,9 @@ namespace OMMS.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -246,6 +249,9 @@ namespace OMMS.DAL.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -267,6 +273,9 @@ namespace OMMS.DAL.Migrations
                     b.Property<int>("BranchId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("EmployeeId")
                         .HasColumnType("int");
 
@@ -279,6 +288,9 @@ namespace OMMS.DAL.Migrations
 
                     b.Property<int>("ParentId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -305,6 +317,9 @@ namespace OMMS.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -316,6 +331,9 @@ namespace OMMS.DAL.Migrations
                     b.Property<string>("Surname")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -339,6 +357,9 @@ namespace OMMS.DAL.Migrations
                     b.Property<int>("BranchId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -350,6 +371,9 @@ namespace OMMS.DAL.Migrations
                     b.Property<string>("Surname")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -367,6 +391,9 @@ namespace OMMS.DAL.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
@@ -390,6 +417,9 @@ namespace OMMS.DAL.Migrations
                     b.Property<decimal>("TotalPrice")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
@@ -407,11 +437,17 @@ namespace OMMS.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<decimal>("CurrentAmount")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("LoanId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -431,6 +467,9 @@ namespace OMMS.DAL.Migrations
                     b.Property<int>("Count")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("LoanId")
                         .HasColumnType("int");
 
@@ -439,6 +478,9 @@ namespace OMMS.DAL.Migrations
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -461,6 +503,9 @@ namespace OMMS.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -472,6 +517,9 @@ namespace OMMS.DAL.Migrations
                     b.Property<string>("TerminalNo")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -491,17 +539,28 @@ namespace OMMS.DAL.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime>("Date")
+                    b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
 
                     b.Property<int>("LoanId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("PaymentType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
 
                     b.HasIndex("LoanId");
 
@@ -529,6 +588,9 @@ namespace OMMS.DAL.Migrations
                     b.Property<int>("Count")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -548,6 +610,9 @@ namespace OMMS.DAL.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.HasIndex("BranchId");
@@ -565,6 +630,9 @@ namespace OMMS.DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("CreateDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Directory")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -575,6 +643,9 @@ namespace OMMS.DAL.Migrations
 
                     b.Property<int?>("ProductId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdateDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -733,15 +804,15 @@ namespace OMMS.DAL.Migrations
             modelBuilder.Entity("OMMS.DAL.Entities.LoanItem", b =>
                 {
                     b.HasOne("OMMS.DAL.Entities.Loan", "Loan")
-                        .WithMany()
+                        .WithMany("LoanItems")
                         .HasForeignKey("LoanId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("OMMS.DAL.Entities.Product", "Product")
-                        .WithMany()
+                        .WithMany("LoanItems")
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Loan");
@@ -762,11 +833,19 @@ namespace OMMS.DAL.Migrations
 
             modelBuilder.Entity("OMMS.DAL.Entities.Payment", b =>
                 {
-                    b.HasOne("OMMS.DAL.Entities.Loan", "Loan")
-                        .WithMany()
-                        .HasForeignKey("LoanId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("OMMS.DAL.Entities.Customer", "Customer")
+                        .WithMany("Payments")
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("OMMS.DAL.Entities.Loan", "Loan")
+                        .WithMany("Payments")
+                        .HasForeignKey("LoanId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
 
                     b.Navigation("Loan");
                 });
@@ -809,11 +888,20 @@ namespace OMMS.DAL.Migrations
             modelBuilder.Entity("OMMS.DAL.Entities.Customer", b =>
                 {
                     b.Navigation("Loans");
+
+                    b.Navigation("Payments");
                 });
 
             modelBuilder.Entity("OMMS.DAL.Entities.Employee", b =>
                 {
                     b.Navigation("Categories");
+                });
+
+            modelBuilder.Entity("OMMS.DAL.Entities.Loan", b =>
+                {
+                    b.Navigation("LoanItems");
+
+                    b.Navigation("Payments");
                 });
 
             modelBuilder.Entity("OMMS.DAL.Entities.Merchant", b =>
@@ -823,6 +911,8 @@ namespace OMMS.DAL.Migrations
 
             modelBuilder.Entity("OMMS.DAL.Entities.Product", b =>
                 {
+                    b.Navigation("LoanItems");
+
                     b.Navigation("ProductImages");
                 });
 #pragma warning restore 612, 618

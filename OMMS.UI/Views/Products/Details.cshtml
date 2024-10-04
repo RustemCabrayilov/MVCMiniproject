@@ -39,12 +39,12 @@
 			align-items: center;
 		}
 
-		.swiper-slide img {
-			display: block;
-			max-width: 100%;
-			max-height: 400px; /* Limit the size of main slider images */
-			object-fit: contain; /* Ensure images keep their aspect ratio */
-		}
+			.swiper-slide img {
+				display: block;
+				max-width: 100%;
+				max-height: 400px; /* Limit the size of main slider images */
+				object-fit: contain; /* Ensure images keep their aspect ratio */
+			}
 
 		/* Adjusting the main swiper container */
 		.mySwiper2 {
@@ -59,22 +59,22 @@
 			padding: 10px 0;
 		}
 
-		.mySwiper .swiper-slide {
-			width: 25%;
-			height: 100%;
-			opacity: 0.4;
-		}
+			.mySwiper .swiper-slide {
+				width: 25%;
+				height: 100%;
+				opacity: 0.4;
+			}
 
-		.mySwiper .swiper-slide-thumb-active {
-			opacity: 1;
-		}
+			.mySwiper .swiper-slide-thumb-active {
+				opacity: 1;
+			}
 
-		.mySwiper img {
-			display: block;
-			max-width: 100%;
-			max-height: 100px; /* Limit the size of the thumbnail images */
-			object-fit: cover; /* Keep thumbnails proportional */
-		}
+			.mySwiper img {
+				display: block;
+				max-width: 100%;
+				max-height: 100px; /* Limit the size of the thumbnail images */
+				object-fit: cover; /* Keep thumbnails proportional */
+			}
 
 		/* Responsive adjustments */
 		@@media (max-width: 768px) {
@@ -86,9 +86,10 @@
 				max-height: 60px;
 			}
 		}
-		a{
-			text-decoration:none;
-			color:black;
+
+		a {
+			text-decoration: none;
+			color: black;
 		}
 	</style>
 </head>
@@ -128,12 +129,17 @@
 			<h1>@Model.Brand</h1>
 			<h4>@Model.Name</h4>
 			<div class="w-75"><p>@Model.Description</p></div>
+			<h5>Stock: @Model.Count left</h5>
+			<h5>Branch: @Model.BranchName</h5>
 			<h3>@Model.Price <i class="fa-solid fa-dollar-sign"></i></h3>
 			<div>
 				<button class="btn btn-warning shopping-cart">
 					<i class="fa-solid fa-cart-shopping text-light"></i>
 				</button>
+				@if (!User.IsInRole("Admin") && !User.IsInRole("Employee"))
+				{
 				<a asp-controller="Loans" asp-action="Create" asp-route-productid="@Model.Id" class="btn btn-warning buy-now text-light">Loan now</a>
+				}
 			</div>
 		</div>
 	</div>

@@ -83,6 +83,7 @@ namespace OMMS.UI.Areas.Admin.Controllers
                 Price = productModel.Price,
                 Brand = productModel.Brand,
                 Model = productModel.Model,
+                UpdateDate=DateTime.Now,
             };
             product.ProductImages = productImages;
             product.Thumbnail = Path.Combine(productImages[0].Directory, productImages[0].Name);
@@ -181,7 +182,7 @@ namespace OMMS.UI.Areas.Admin.Controllers
             product.Price = productModel.Price;
             product.Brand = productModel.Brand;
             product.Model = productModel.Model;
-
+            product.UpdateDate= DateTime.Now;
             if (productModel.ImageFiles != null)
             {
                 List<ProductImage> productImages = new();

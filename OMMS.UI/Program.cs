@@ -2,21 +2,37 @@ using Azure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using NToastNotify;
 using OMMS.DAL.Data;
 using OMMS.DAL.Entities;
 using OMMS.DAL.Repository;
 using OMMS.DAL.Repository.Interface;
+using OMMS.UI.Configuration;
+using OMMS.UI.Services;
+using OMMS.UI.Services.Interfaces;
 
 namespace OMMS.UI
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static  void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            var toastrOptions = new ToastrOptions()
+            {
+                ProgressBar = false,
+                PositionClass = ToastPositions.TopRight,
+                ShowDuration = 500,
+                
+            };
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+            builder.Services.AddScoped<IEmailService, EmailService>();
             // Add services to the container.
-            builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
+            builder.Services.AddControllersWithViews()
+              .AddNToastNotifyToastr(toastrOptions);
+            builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
             builder.Services.AddDbContext<OMMSDbContext>(
                 opts=>opts.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnectionString")));
             builder.Services.AddIdentity<AppUser, AppRole>(opts =>
@@ -28,9 +44,13 @@ namespace OMMS.UI
                 opts.Password.RequireUppercase = false;
                 opts.Password.RequiredLength = 6;
 
-            }).AddEntityFrameworkStores<OMMSDbContext>();
-            
-            
+            }).AddEntityFrameworkStores<OMMSDbContext>().AddDefaultTokenProviders();
+            builder.Services.Configure<DataProtectionTokenProviderOptions>(opts =>
+            {
+                opts.TokenLifespan = TimeSpan.FromHours(2);
+            });
+
+
             builder.Services.ConfigureApplicationCookie(cf =>
             {
 
@@ -45,6 +65,7 @@ namespace OMMS.UI
                 cf.LoginPath = "/Account/LogIn";
 
             });
+
             var app = builder.Build();
 
 
@@ -62,6 +83,7 @@ namespace OMMS.UI
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseNToastNotify();
             app.MapControllerRoute(
                       name: "areas",
                       pattern: "{area:exists}/{controller=Account}/{action=LogIn}/{id?}"

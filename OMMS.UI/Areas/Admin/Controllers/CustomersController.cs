@@ -67,6 +67,7 @@ namespace OMMS.UI.Areas.Admin.Controllers
 				Occupation = model.Occupation,
 				Address = model.Address,
 				AppUserId = model.UserId,
+				UpdateDate= DateTime.Now,
 			};
 			await _customerRepository.Create(customer);
 			await _customerRepository.SaveAsync();
@@ -123,6 +124,7 @@ namespace OMMS.UI.Areas.Admin.Controllers
 			customer.Occupation = model.Occupation;
 			customer.Address = model.Address;
 			customer.AppUserId = model.UserId;
+			customer.UpdateDate = DateTime.Now;
 			 _customerRepository.Update(customer);
 			_customerRepository.Save();
 			return RedirectToAction("Index");

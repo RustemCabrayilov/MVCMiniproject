@@ -8,7 +8,7 @@ using OMMS.UI.Models;
 namespace OMMS.UI.Area.Admin
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin")]
+
     public class UsersController : Controller
     {
         private readonly UserManager<AppUser> _userManager;

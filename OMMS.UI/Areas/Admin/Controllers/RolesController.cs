@@ -8,7 +8,7 @@ using System.Data;
 namespace OMMS.UI.Area.Admin
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin")]
+
     public class RolesController : Controller
     {
         private readonly RoleManager<AppRole> _roleManager;
@@ -27,7 +27,7 @@ namespace OMMS.UI.Area.Admin
                 model.Add(new RoleVM
                 {
                     Id = role.Id,
-                    Name = role.Name
+                    Name = role.Name,
                 });
             }
             return View(model);

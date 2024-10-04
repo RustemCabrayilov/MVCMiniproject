@@ -97,5 +97,30 @@ namespace OMMS.UI.Controllers
 			_customerRepository.Save();
 			return RedirectToAction("Index");
 		}
+		public async Task<IActionResult> Create()
+		{
+			var userId =  _userManager.GetUserId(User);
+			CustomerVM customer = new()
+			{
+				UserId=userId,
+			};
+			return View();
+		}
+		[HttpPost]
+		public async Task<IActionResult> Create(CustomerVM model)
+		{
+			Customer customer = new()
+			{
+				Name = model.Name,
+				Surname = model.Surname,
+				Occupation = model.Occupation,
+				Address = model.Address,
+				AppUserId = model.UserId,
+			};
+			await _customerRepository.Create(customer);
+			await _customerRepository.SaveAsync();
+			var referer = Request.Headers["Referer"].ToString();
+			return Redirect(referer);
+		}
 	}
 }

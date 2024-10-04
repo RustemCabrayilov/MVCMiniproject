@@ -64,6 +64,7 @@ namespace OMMS.UI.Areas.Admin.Controllers
 				Position = model.Position,
 				BranchId = model.BranchId,
 				AppUserId = model.AppUserId,
+				UpdateDate = DateTime.Now
 			};
 			await _employeeRepository.Create(employee);
 			await _employeeRepository.SaveAsync();
@@ -93,6 +94,7 @@ namespace OMMS.UI.Areas.Admin.Controllers
 			employee.Position = model.Position;
 			employee.BranchId = model.BranchId;
 			employee.AppUserId = model.AppUserId;
+			employee.UpdateDate = DateTime.Now;
 			_employeeRepository.Update(employee);
 			_employeeRepository.Save();
 			return RedirectToAction("Index");

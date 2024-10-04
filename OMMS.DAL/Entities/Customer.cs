@@ -15,5 +15,6 @@ namespace OMMS.DAL.Entities
         public string AppUserId { get; set; }
         public AppUser AppUser { get; set; }
         public ICollection<Loan> Loans { get; set; }
+        public ICollection<Payment> Payments { get; set; }
     }
 }

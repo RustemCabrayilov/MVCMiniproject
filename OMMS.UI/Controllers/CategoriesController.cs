@@ -24,11 +24,13 @@ namespace OMMS.UI.Controllers
                 List<Category> searchCategories = categories.Where(c => c.Name.ToLower() == searchCategory.ToLower()).ToList();
                 foreach (var category in searchCategories)
                 {
+                    var parentCategory = await _categoryRepository.Get(category.ParentId);
                     models.Add(new()
                     {
                         Id = category.Id,
                         Name = category.Name,
                         Level = category.Level,
+                        ParentCategory=parentCategory.Name??"No Parent category"
                     });
                 }
             }

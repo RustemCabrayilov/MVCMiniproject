@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Operations;
 using OMMS.DAL.Entities;
 using OMMS.DAL.Repository.Interface;
 using OMMS.UI.Models;
@@ -8,7 +9,7 @@ using OMMS.UI.Models;
 namespace OMMS.UI.Areas.Admin.Controllers
 {
 	[Area("Admin")]
-	[Authorize(Roles ="Admin,Employee")]
+	[Authorize(Roles = "Admin,Employee")]
 	public class CategoriesController : Controller
 	{
 		private readonly IGenericRepository<Category> _categoryRepository;
@@ -41,7 +42,7 @@ namespace OMMS.UI.Areas.Admin.Controllers
 					BranchName = branch.Name,
 					EmployeeName = employee.Name,
 					Level = model.Level,
-					ParentCategory = model.ParentId!=0?parentCategory.Name:"No parent category",
+					ParentCategory = model.ParentId != 0 ? parentCategory.Name : "No parent category",
 
 				});
 			}
@@ -70,9 +71,42 @@ namespace OMMS.UI.Areas.Admin.Controllers
 				ParentId = model.ParentId,
 				BranchId = model.BranchId,
 				EmployeeId = model.EmployeeId,
+				UpdateDate = DateTime.Now,
 			};
 			await _categoryRepository.Create(category);
 			await _categoryRepository.SaveAsync();
+			return RedirectToAction("Index");
+		}
+		public async Task<IActionResult> Edit(int Id)
+		{
+			var branchs = await _branchRepository.GetAll();
+			var categories = await _categoryRepository.GetAll();
+			var employees = await _employeeRepository.GetAll();
+			var category = await _categoryRepository.Get(Id);
+			CategoryVM model = new()
+			{
+				Name = category.Name,
+				Level = category.Level,
+				ParentId = category.ParentId,
+				BranchId = category.BranchId,
+				EmployeeId = category.EmployeeId,
+				Branchs = branchs.ToList(),
+				Employees = employees.ToList(),
+				Categories = categories.ToList(),
+			};
+			return View(model);
+		}
+		[HttpPost]
+		public async Task<IActionResult> Edit(CategoryVM model, int id)
+		{
+			var category = await _categoryRepository.Get(id);
+			category.Name = model.Name;
+			category.Level = model.Level;
+			category.ParentId = model.ParentId;
+			category.BranchId = model.BranchId;
+			category.EmployeeId = model.EmployeeId;
+			_categoryRepository.Update(category);
+			_categoryRepository.Save();
 			return RedirectToAction("Index");
 		}
 	}

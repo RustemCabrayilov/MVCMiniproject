@@ -5,6 +5,7 @@ using OMMS.DAL.Enums;
 using OMMS.DAL.Repository.Interface;
 using OMMS.UI.Enums;
 using OMMS.UI.Models;
+using OMMS.UI.Services.Interfaces;
 using System.Linq;
 
 namespace OMMS.UI.Controllers
@@ -16,18 +17,20 @@ namespace OMMS.UI.Controllers
 		private readonly IGenericRepository<LoanItem> _loanItemRepository;
 		private readonly IGenericRepository<Customer> _customerRepository;
 		private readonly IGenericRepository<Product> _productRepository;
-
+		private readonly IEmailService _emailService;
 		public LoansController(IGenericRepository<Loan> loanRepository,
 			UserManager<AppUser> userManager,
 			IGenericRepository<Customer> customerRepository,
 			IGenericRepository<Product> productRepository,
-			IGenericRepository<LoanItem> loanItemRepository)
+			IGenericRepository<LoanItem> loanItemRepository,
+			IEmailService emailService)
 		{
 			_loanRepository = loanRepository;
 			_userManager = userManager;
 			_customerRepository = customerRepository;
 			_productRepository = productRepository;
 			_loanItemRepository = loanItemRepository;
+			_emailService = emailService;
 		}
 
 		public async Task<IActionResult> Index()
@@ -37,7 +40,7 @@ namespace OMMS.UI.Controllers
 			var customers = await _customerRepository.GetAll();
 			var customer = customers.ToList().FirstOrDefault(c => c.AppUserId == userId);
 			var loans = await _loanRepository.GetAll();
-			var pendingLoans = loans.Where(l => l.CustomerId == customer.Id&&l.Status==Status.Pending);
+			var pendingLoans = loans.Where(l => l.CustomerId == customer.Id && l.Status == Status.Pending);
 			var loanItems = await _loanItemRepository.GetAll();
 			foreach (var loan in pendingLoans.ToList())
 			{
@@ -50,8 +53,8 @@ namespace OMMS.UI.Controllers
 					Terms = loan.Terms,
 					Customer = customer,
 					Status = loan.Status,
-					Count=loanItem.Count,
-					Price=loanItem.Price
+					Count = loanItem.Count,
+					Price = loanItem.Price
 				});
 			}
 			return View(models);
@@ -60,6 +63,10 @@ namespace OMMS.UI.Controllers
 		{
 			var userId = _userManager.GetUserId(User);
 			var customer = (await _customerRepository.GetAll()).FirstOrDefault(c => c.AppUserId == userId);
+			if (customer == null)
+			{
+				return RedirectToAction("Create", "Customers");
+			}
 			var product = await _productRepository.Get(productId ?? 0);
 			LoanVM model = new()
 			{
@@ -73,6 +80,10 @@ namespace OMMS.UI.Controllers
 				int term = (int)item;
 				model.TermList.Add(term);
 			}
+
+
+
+
 			return View(model);
 		}
 		[HttpPost]
@@ -102,6 +113,9 @@ namespace OMMS.UI.Controllers
 				Count = count,
 				Price = price
 			};
+			var user = await _userManager.GetUserAsync(User);
+			string url = Url.Action("Create", "Payments", new { userId = userId, loanId = loan.Id }, HttpContext.Request.Scheme);
+			await _emailService.SendPaymentEmail(url, user.Email, loan);
 			await _loanItemRepository.Create(loanItem);
 			await _loanItemRepository.SaveAsync();
 			return RedirectToAction("Details", "Products", new { Id = product.Id });

@@ -8,7 +8,7 @@ using OMMS.UI.Models;
 
 namespace OMMS.UI.Controllers
 {
-	[Authorize(Roles ="Branch,Admin")]
+	[Authorize(Roles ="Merchant,Admin")]
 	public class BranchsController : Controller
 	{
 		private readonly IGenericRepository<Branch> _branchRepository;

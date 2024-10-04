@@ -83,19 +83,22 @@
 							<a class="nav-link me-4" asp-controller="Loans" asp-action="Index">Loan requests</a>
 						</li>
 						<li class="nav-item">
+							<a class="nav-link me-4" asp-controller="Payments" asp-action="Index">Payments</a>
+						</li>
+						<li class="nav-item">
 							@if (User.IsInRole("Admin"))
 							{
 								<a class="nav-link text-dark" asp-area="" asp-controller="Merchants" asp-action="Create">Create Merchant</a>
 							}
 						</li>
 						<li class="nav-item">
-							@if (User.IsInRole("Admin,Merchant"))
+							@if (User.IsInRole("Admin") || User.IsInRole("Merchant"))
 							{
 								<a class="nav-link text-dark" asp-area="" asp-controller="Branchs" asp-action="Create">Create Branch</a>
 							}
 						</li>
 						<li class="nav-item">
-							@if (User.IsInRole("Admin,Branch"))
+							@if (User.IsInRole("Admin") || User.IsInRole("Branch"))
 							{
 								<a class="nav-link text-dark" asp-area="" asp-controller="Employees" asp-action="Create">Create Employee</a>
 

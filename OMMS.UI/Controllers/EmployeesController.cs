@@ -7,7 +7,7 @@ using OMMS.UI.Models;
 
 namespace OMMS.UI.Controllers
 {
-	[Authorize(Roles ="Admin,Employee")]
+	[Authorize(Roles ="Admin,Branch")]
 	public class EmployeesController : Controller
 	{
 		private readonly IGenericRepository<Employee> _employeeRepository;

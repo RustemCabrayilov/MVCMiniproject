@@ -97,6 +97,7 @@ namespace OMMS.UI.Areas.Admin.Controllers
 				EmployeeId = model.EmployeeId,
 				CustomerId = model.CustomerId,
 				Status = Status.Accept,
+				UpdateDate=DateTime.Now,
 			};
 			int count = model.Count;
 			decimal price = count * totalPrice;
@@ -107,6 +108,10 @@ namespace OMMS.UI.Areas.Admin.Controllers
 				Count = count,
 				Price = price
 			};
+			product.Count += loanItem.Count;
+			product.Count -= count;
+			_productRepository.Update(product);
+			_productRepository.Save();
 			await _loanRepository.Create(loan);
 			await _loanRepository.SaveAsync();
 			await _loanItemRepository.Create(loanItem);
@@ -149,6 +154,8 @@ namespace OMMS.UI.Areas.Admin.Controllers
 		public async Task<IActionResult> Edit(LoanVM model, int id, string assess)
 		{
 			var loan = await _loanRepository.Get(model.Id != 0 ? model.Id : id);
+			var loanItems = await _loanItemRepository.GetAll();
+			var loanItem = loanItems.FirstOrDefault(li => li.LoanId == loan.Id);
 			var product = await _productRepository.Get(model.ProductId);
 			decimal monthlyPrice = (product.Price / model.Terms) * (decimal)1.05;
 			decimal totalPrice = monthlyPrice * model.Terms;
@@ -159,6 +166,14 @@ namespace OMMS.UI.Areas.Admin.Controllers
 			loan.TotalPrice = totalPrice;
 			loan.MonthlyPrice = monthlyPrice;
 			loan.Status = model.Status;
+			int count = model.Count;
+			decimal price = count * totalPrice;
+
+			loanItem.LoanId = loan.Id;
+			loanItem.ProductId = model.ProductId;
+			loanItem.Count = count;
+			loanItem.Price = price;
+			loanItem.UpdateDate = DateTime.Now;
 			if (assess == "Accept")
 			{
 				loan.Status = Status.Accept;
@@ -167,8 +182,14 @@ namespace OMMS.UI.Areas.Admin.Controllers
 			{
 				loan.Status = Status.Reject;
 			}
+			product.Count += loanItem.Count;
+			product.Count -= count;
+			_productRepository.Update(product);
+			_loanRepository.Save();
 			_loanRepository.Update(loan);
 			_loanRepository.Save();
+			_loanItemRepository.Update(loanItem);
+			_loanItemRepository.Save();
 			return RedirectToAction("Index");
 		}
 		public async Task<IActionResult> Delete(int Id)
@@ -194,8 +215,12 @@ namespace OMMS.UI.Areas.Admin.Controllers
 		public async Task<IActionResult> Delete(LoanVM model)
 		{
 			var loan = await _loanRepository.Get(model.Id);
+			var loanItems = await _loanItemRepository.GetAll();
+			var loanItem = loanItems.FirstOrDefault(l => l.LoanId == loan.Id);
 			_loanRepository.Remove(loan.Id);
 			_loanRepository.Save();
+			_loanItemRepository.Remove(loanItem.Id);
+			_loanItemRepository.Save();
 			return RedirectToAction("Index");
 		}
 		public async Task<IActionResult> Assess(int? loanId)

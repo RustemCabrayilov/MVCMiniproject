@@ -18,5 +18,7 @@ namespace OMMS.DAL.Entities
         public int? EmployeeId { get; set; }
         public Employee? Employee { get; set; }
         public Status Status { get; set; }
+        public ICollection<Payment> Payments { get; set; }
+        public List<LoanItem> LoanItems { get; set; }
     }
 }

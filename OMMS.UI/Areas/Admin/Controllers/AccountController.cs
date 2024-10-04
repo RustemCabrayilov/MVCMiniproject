@@ -7,7 +7,7 @@ using OMMS.UI.Models;
 namespace OMMS.UI.Areas.Admin.Controllers
 {
 	[Area("admin")]
-	[Authorize(Roles = "Admin,Employee,Merchant,Branch")]
+
 	public class AccountController : Controller
 	{
 		private readonly SignInManager<AppUser> _signInmanagerManager;

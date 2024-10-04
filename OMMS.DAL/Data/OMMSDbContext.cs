@@ -16,13 +16,7 @@ namespace OMMS.DAL.Data
         {
 
         }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(CategoryConfiguration).Assembly);
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(BranchConfiguration).Assembly);
-            base.OnModelCreating(modelBuilder);
-        }
-
+	
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Branch> Branchs { get; set; }
         public DbSet<Category> Categories { get; set; }
@@ -31,9 +25,17 @@ namespace OMMS.DAL.Data
         public DbSet<LoanDetail> LoanDetails { get; set; }
         public DbSet<LoanItem> LoanItems { get; set; }
         public DbSet<Merchant> Merchants { get; set; }
-        public DbSet<Payment> Payments { get; set; }
         public DbSet<Product> Products { get; set; }
+		public DbSet<Payment> Payments { get; set; }
 
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
+		{
+			modelBuilder.ApplyConfigurationsFromAssembly(typeof(CategoryConfiguration).Assembly);
+			modelBuilder.ApplyConfigurationsFromAssembly(typeof(BranchConfiguration).Assembly);
+			modelBuilder.ApplyConfigurationsFromAssembly(typeof(PaymentConfiguration).Assembly);
+			modelBuilder.ApplyConfigurationsFromAssembly(typeof(LoanItemConfiguration).Assembly);
+			base.OnModelCreating(modelBuilder);
+		}
 
-    }
+	}
 }

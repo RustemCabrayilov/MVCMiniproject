@@ -10,6 +10,9 @@ namespace OMMS.UI.Controllers
 	[ApiController]
 	public class PaymentController : ControllerBase
 	{
+		/*
+		 Payment API not now 
+		 */
 		private readonly IGenericRepository<Payment> _paymentRepository;
 
 		public PaymentController(IGenericRepository<Payment> paymentRepository)
