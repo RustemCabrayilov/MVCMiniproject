@@ -32,6 +32,7 @@ namespace OMMS.UI
             // Add services to the container.
             builder.Services.AddControllersWithViews()
               .AddNToastNotifyToastr(toastrOptions);
+
             builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
             builder.Services.AddDbContext<OMMSDbContext>(
                 opts=>opts.UseSqlServer(builder.Configuration.GetConnectionString("SqlConnectionString")));

@@ -20,5 +20,6 @@ namespace OMMS.DAL.Entities
         public Status Status { get; set; }
         public ICollection<Payment> Payments { get; set; }
         public List<LoanItem> LoanItems { get; set; }
+        public LoanDetail? LoanDetail { get; set; }
     }
 }

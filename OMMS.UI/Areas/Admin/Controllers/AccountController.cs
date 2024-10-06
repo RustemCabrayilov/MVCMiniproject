@@ -1,22 +1,24 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using NToastNotify;
 using OMMS.DAL.Entities;
 using OMMS.UI.Models;
 
 namespace OMMS.UI.Areas.Admin.Controllers
 {
 	[Area("admin")]
-
+	[Authorize(Roles ="Admin,Employee")]
 	public class AccountController : Controller
 	{
 		private readonly SignInManager<AppUser> _signInmanagerManager;
 		private readonly UserManager<AppUser> _userManager;
-
-		public AccountController(SignInManager<AppUser> signInmanagerManager, UserManager<AppUser> userManager)
+		private readonly IToastNotification _toastr;
+		public AccountController(SignInManager<AppUser> signInmanagerManager, UserManager<AppUser> userManager, IToastNotification toastr)
 		{
 			_signInmanagerManager = signInmanagerManager;
 			_userManager = userManager;
+			_toastr = toastr;
 		}
 
 		public IActionResult LogIn()
@@ -26,13 +28,14 @@ namespace OMMS.UI.Areas.Admin.Controllers
 		[HttpPost]
 		public async Task<IActionResult> LogIn(LogInVM model)
 		{
-	
+
 			if (ModelState.IsValid)
 			{
-				var hasUser = await _userManager.FindByEmailAsync(model.Email);
-				if (hasUser != null)
+				var user = await _userManager.FindByEmailAsync(model.Email);
+				if (user != null)
 				{
-					var signInResult = await _signInmanagerManager.PasswordSignInAsync(hasUser, model.Password, false, false);
+					var signInResult = await _signInmanagerManager.PasswordSignInAsync(user, model.Password, false, false);
+					_toastr.AddSuccessToastMessage($"Welcome {user.UserName}");
 					return RedirectToAction("Index", "Home");
 				}
 				else

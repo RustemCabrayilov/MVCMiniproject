@@ -20,8 +20,8 @@
 		</div>
 		<div class="col-md-6">
 			<div class="form-group">
-				<label asp-for="ParentId" class="control-label"></label>
-				<select asp-for="ParentId" asp-items="@(new SelectList(Model.Categories,nameof(Model.Id),nameof(Model.Name)))">
+				<label asp-for="ParentId" class="control-label">Parent</label>
+				<select asp-for="ParentId" class="formbold-form-select form-control" asp-items="@(new SelectList(Model.Categories,nameof(Model.Id),nameof(Model.Name)))">
 					<option>Please select one </option>
 				</select>
 				<span asp-validation-for="ParentId" class="text-danger"></span>
@@ -36,8 +36,8 @@
 		</div>
 		<div class="col-md-6">
 			<div class="form-group">
-				<label asp-for="BranchId" class="control-label"></label>
-				<select asp-for="BranchId" asp-items="@(new SelectList(Model.Branchs,nameof(Model.Id),nameof(Model.Name)))">
+				<label asp-for="BranchId" class="control-label">Branch</label>
+				<select asp-for="BranchId" class="formbold-form-select form-control" asp-items="@(new SelectList(Model.Branchs,nameof(Model.Id),nameof(Model.Name)))">
 				<option>Please select one </option>
 			</select>
 				<span asp-validation-for="BranchId" class="text-danger"></span>

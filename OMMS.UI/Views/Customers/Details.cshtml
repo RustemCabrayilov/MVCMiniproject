@@ -7,7 +7,7 @@
 		font-family: 'Open Sans', sans-serif;
 		padding: 0px !important;
 		margin: 0px !important;
-		font-size: 13px;
+	
 		text-rendering: optimizeLegibility;
 		-webkit-font-smoothing: antialiased;
 		-moz-font-smoothing: antialiased;
@@ -384,7 +384,7 @@
 				margin-right: 0px;
 			}
 </style>
-
+<link rel="stylesheet" href="~/css/modal.css" />
 <div class="row min-vh-100 py-5 ">
 	<div class="profile-nav col-md-3">
 		<div class="panel">
@@ -396,7 +396,7 @@
 				<p>@Model.Email</p>
 			</div>
 			<ul class="nav nav-pills nav-stacked">
-				<li><a asp-action="Edit" asp-route-Id="@Model.Id"> <i class="fa fa-edit"></i> Edit profile</a></li>
+				<li><a asp-controller="Customers" asp-action="Edit" asp-route-Id="@Model.Id"> <i class="fa fa-edit"></i> Edit profile</a></li>
 			</ul>
 		</div>
 	</div>
@@ -406,19 +406,19 @@
 				<h1>Bio Graph</h1>
 				<div class="row">
 					<div class="bio-row">
-						<p><span>First Name </span>: @Model.Name</p>
+						<p><span>First Name</span>: @Model.Name</p>
 					</div>
 					<div class="bio-row">
-						<p><span>Last Name </span>: @Model.Surname</p>
+						<p><span>Last Name</span>: @Model.Surname</p>
 					</div>
 					<div class="bio-row">
-						<p><span>Occupation </span>: @Model.Occupation</p>
+						<p><span>Occupation</span>: @Model.Occupation</p>
 					</div>
 					<div class="bio-row">
-						<p><span>Email </span>: @Model.Email</p>
+						<p><span>Email</span>: @Model.Email</p>
 					</div>
 					<div class="bio-row">
-						<p><span>Phone </span>: @Model.PhoneNumber</p>
+						<p><span>Phone</span>: @Model.PhoneNumber</p>
 					</div>
 
 				</div>
@@ -443,9 +443,19 @@
 								</div>
 								<div class="bio-desk">
 									<h4 class="red mt-2">@loanItem.Loan.Title</h4>
-									<p>Count:@loanItem.Count </p>
-									<p>Status:@loanItem.Loan.Status</p>
-									<p>Total : @loanItem.Price  <i class="fa-solid fa-dollar-sign"></i></p>
+									<p>Count: @loanItem.Count </p>
+									<p>Status: @loanItem.Loan.Status</p>
+									<p>Total: @loanItem.Price  <i class="fa-solid fa-dollar-sign"></i></p>
+
+									@* @await Component.InvokeAsync("LoanModal", loanItem.Loan.Id) *@
+								@await Html.PartialAsync("_Modal",loanItem.Loan)
+									<div class="content">
+										<div class="buttons">
+											<div id="one" class="button">Details</div><br>
+										</div>
+									</div>
+
+
 								</div>
 							</div>
 						</div>
@@ -455,4 +465,7 @@
 			</div>
 		</div>
 	</div>
+
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="~/js/modal.js"></script>

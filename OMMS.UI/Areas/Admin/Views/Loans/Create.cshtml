@@ -17,15 +17,16 @@
 		<div class="col-md-6">
 			<div class="form-group">
 				<label asp-for="CustomerId" class="control-label">Customer</label>
-				<select required asp-for="CustomerId" asp-items="@(new SelectList(Model.Customers,nameof(Model.Id),"Name"))">
+				<select required asp-for="CustomerId" class="formbold-form-select form-control" asp-items="@(new SelectList(Model.Customers,nameof(Model.Id),"Name"))">
 					<option>Please select one </option>
 				</select>
 				<span asp-validation-for="CustomerId" class="text-danger"></span>
 			</div>
+			</div>
 			<div class="col-md-6">
 			<div class="form-group">
 				<label asp-for="ProductId" class="control-label">Product</label>
-				<select required asp-for="ProductId" asp-items="@(new SelectList(Model.Products,nameof(Model.Id),"Name"))">
+					<select required asp-for="ProductId" class="formbold-form-select form-control" asp-items="@(new SelectList(Model.Products,nameof(Model.Id),"Name"))">
 					<option>Please select one </option>
 				</select>
 				<span asp-validation-for="ProductId" class="text-danger"></span>

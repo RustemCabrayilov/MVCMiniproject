@@ -25,11 +25,16 @@
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
     <Folder Include="Areas\Admin\Models\" />
+    <Folder Include="wwwroot\LogInTemplate\NToastNotify\" />
     <Folder Include="wwwroot\productImages\" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="wwwroot\fonts\.DS_Store" />
+    <None Include="wwwroot\HomeTemplate\js\jquery-1.11.0.min.js" />
+    <None Include="wwwroot\HomeTemplate\js\plugins.js" />
+    <None Include="wwwroot\HomeTemplate\js\script.js" />
+    <None Include="wwwroot\LogInTemplate\.DS_Store" />
     <None Include="wwwroot\LogInTemplate\css\.DS_Store" />
     <None Include="wwwroot\LogInTemplate\fonts\.DS_Store" />
     <None Include="wwwroot\LogInTemplate\images\.DS_Store" />

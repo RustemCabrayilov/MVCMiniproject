@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using NToastNotify;
 using OMMS.DAL.Entities;
+using OMMS.DAL.Enums;
 using OMMS.DAL.Repository.Interface;
 using OMMS.UI.Models;
 
@@ -12,40 +14,50 @@ namespace OMMS.UI.Controllers
 		private readonly IGenericRepository<Loan> _loanRepository;
 		private readonly IGenericRepository<LoanItem> _loanItemRepository;
 		private readonly UserManager<AppUser> _userManager;
+		private readonly IToastNotification _toastr;
 
 		public CustomersController(IGenericRepository<Customer> customerRepository,
 			UserManager<AppUser> userManager,
 			IGenericRepository<Loan> loanRepository,
-			IGenericRepository<LoanItem> loanItemRepository)
+			IGenericRepository<LoanItem> loanItemRepository,
+			IToastNotification toastr)
 		{
 			_customerRepository = customerRepository;
 			_userManager = userManager;
 			_loanRepository = loanRepository;
 			_loanItemRepository = loanItemRepository;
+			_toastr = toastr;
 		}
 		public async Task<IActionResult> Details()
 		{
-			string userId = _userManager.GetUserId(User); 
-			var user =await _userManager.FindByIdAsync(userId);
-			var customer = (await _customerRepository.GetAll()).FirstOrDefault(c=>c.AppUserId==userId);
-			var loans= (await _loanRepository.GetAll()).Where(l=>l.CustomerId==customer.Id).ToList();
-			List<LoanItemVM> LoanItemModels = new();
-            foreach (var loan in loans)
+			string userId = _userManager.GetUserId(User);
+			if (userId == null)
 			{
-				var loanItems=(await _loanItemRepository.GetAll()).Where(l=>l.LoanId==loan.Id).ToList();
-                foreach (var loanItem in loanItems)
-                {
-                LoanItemModels.Add(new() {
-				LoanId=loan.Id,
-				Loan=loan,
-				Count=loanItem.Count,
-				Price=loanItem.Price,
-				ProductId=loanItem.ProductId,
-				});
-                    
-                }
-            }
-            CustomerVM model = new()
+				return RedirectToAction("LogIn","Account");
+			}
+			var user = await _userManager.FindByIdAsync(userId);
+			var customer = (await _customerRepository.GetAll()).FirstOrDefault(c => c.AppUserId == userId);
+			var loans = (await _loanRepository.GetAll()).Where(l => l.CustomerId == customer.Id && l.Status == Status.Accept).ToList();
+			List<LoanItemVM> LoanItemModels = new();
+			foreach (var loan in loans)
+			{
+				var loanItems = (await _loanItemRepository.GetAll()).Where(l => l.LoanId == loan.Id).ToList();
+				foreach (var loanItem in loanItems)
+				{
+					var loanInc = await _loanRepository.Get(loan.Id,"LoanDetail");
+					LoanItemModels.Add(new()
+					{
+						LoanId = loan.Id,
+						Loan = loanInc,
+						Count = loanItem.Count,
+						Price = loan.TotalPrice,
+						ProductId = loanItem.ProductId,
+						
+					});
+
+				}
+			}
+			CustomerVM model = new()
 			{
 				Id = customer.Id,
 				Name = customer.Name,
@@ -55,7 +67,8 @@ namespace OMMS.UI.Controllers
 				UserName = user.UserName,
 				Email = user.Email,
 				PhoneNumber = user.PhoneNumber,
-				LoanItems=LoanItemModels
+				LoanItems = LoanItemModels,
+				
 			};
 			return View(model);
 		}
@@ -73,16 +86,16 @@ namespace OMMS.UI.Controllers
 				Occupation = customer.Occupation,
 				UserName = user.UserName,
 				UserId = userId
-				
+
 			};
 			return View(model);
 		}
 		[HttpPost]
-		public async Task<IActionResult> Edit(CustomerVM model,int id)
+		public async Task<IActionResult> Edit(CustomerVM model, int id)
 		{
 			string userId = _userManager.GetUserId(User);
 			var user = await _userManager.FindByIdAsync(userId);
-			user.UserName=model.UserName;
+			user.UserName = model.UserName;
 			Customer customer = new()
 			{
 				Id = model.Id,
@@ -93,18 +106,24 @@ namespace OMMS.UI.Controllers
 				AppUserId = model.UserId
 			};
 			await _userManager.UpdateAsync(user);
-		   _customerRepository.Update(customer);
+			_customerRepository.Update(customer);
 			_customerRepository.Save();
-			return RedirectToAction("Index");
+			return RedirectToAction("Details");
 		}
 		public async Task<IActionResult> Create()
 		{
-			var userId =  _userManager.GetUserId(User);
-			CustomerVM customer = new()
+
+			var userId = _userManager.GetUserId(User);
+			if(userId == null)
 			{
-				UserId=userId,
+				_toastr.AddWarningToastMessage("You havent registered  as a user");
+				return RedirectToAction("LogIn","Account");
+			}
+			CustomerVM model = new()
+			{
+				UserId = userId,
 			};
-			return View();
+			return View(model);
 		}
 		[HttpPost]
 		public async Task<IActionResult> Create(CustomerVM model)

@@ -16,5 +16,6 @@ namespace OMMS.UI.Models
         public List<AppUser> Users { get; set; }
         public List<Loan> Loans { get; set; }
         public List<LoanItemVM> LoanItems { get; set; }
+        public LoanDetail LoanDetail { get; set; }
     }
 }

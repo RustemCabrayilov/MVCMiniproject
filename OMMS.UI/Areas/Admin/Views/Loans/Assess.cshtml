@@ -1,7 +1,7 @@
 ﻿@model LoanVM
 <h1>Assess</h1>
 <hr>
-<form asp-action="Edit">
+<form asp-action="Assess">
 	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 	<div class="row">
 		<div class="col-md-6">
@@ -10,22 +10,24 @@
 				@Html.HiddenFor(l=>l.CustomerId)
 				@Html.HiddenFor(l=>l.EmployeeId)
 				@Html.HiddenFor(l=>l.ProductId)
+				@Html.HiddenFor(l=>l.Count)
 				<label asp-for="Title" class="control-label"></label>
 				<input readonly asp-for="Title" class="form-control" />
 				<span asp-validation-for="Title" class="text-danger"></span>
 			</div>
 		</div>
 		<div class="col-md-6">
-			<p>@Model.Customer.Name</p>
-			<p>@Model.Customer.Surname</p>
-			<p>@Model.Customer.Occupation</p>
-			<p>@Model.Customer.Address</p>
+			<p>Customer Name: @Model.Customer.Name</p>
+			<p>Customer Surname: @Model.Customer.Surname</p>
+			<p>Customer Occupation: @Model.Customer.Occupation</p>
+			<p>Customer Address: @Model.Customer.Address</p>
 		</div>
 		<div class="col-md-6">
-			<p>@Model.Product.Name</p>
-			<p>@Model.Product.Model</p>
-			<p>@Model.Product.Brand</p>
-			<p>@Model.Product.Branch.Name</p>
+			<p>Product: @Model.Product.Name</p>
+			<p>Model: @Model.Product.Model</p>
+			<p>Brand: @Model.Product.Brand</p>
+			<p>branch: @Model.Product.Branch.Name</p>
+			<p>Count: @Model.Count</p>
 		</div>
 
 		<div class="col-md-6">
@@ -48,8 +50,8 @@
 		<div class="col-md-3 d-flex justify-content-end">
 			<div class="form-group">
 
-				<input name="assess" type="submit" value="Accept" class="btn btn-primary" />
-				<input name="assess" type="submit" value="Reject" class="btn btn-primary" />
+				<input asp-for="Status" type="submit" value="Accept" class="btn btn-primary" />
+				<input asp-for="Status" type="submit" value="Reject" class="btn btn-primary" />
 			</div>
 		</div>
 	</div>

@@ -100,9 +100,6 @@
 									</label>
 									<span class="ml-auto"><a asp-controller="Account" asp-action="ForgotPassword" class="forgot-pass">Forgot Password</a></span>
 								</div>
-
-								
-						
 									<div class="d-flex justify-content-between">
 									<input type="submit" value="Log In" class="btn btn-block btn-primary w-50">
 										<a class="btn btn-primary text-light text-decoration-none d-flex align-items-center" asp-controller="Account" asp-action="SignUp">
@@ -120,9 +117,11 @@
 	</div>
 
 
-	<script src="~/LogInTemplate/js/jquery-3.3.1.min.js"></script>
-	<script src="~/LogInTemplate/js/popper.min.js"></script>
-	<script src="~/LogInTemplate/js/bootstrap.min.js"></script>
-	<script src="~/LogInTemplate/js/main.js"></script>
+	@section scripts{
+		<script src="~/LogInTemplate/js/jquery-3.3.1.min.js"></script>
+		<script src="~/LogInTemplate/js/popper.min.js"></script>
+		<script src="~/LogInTemplate/js/bootstrap.min.js"></script>
+		<script src="~/LogInTemplate/js/main.js"></script>
+	}
 </body>
 </html>

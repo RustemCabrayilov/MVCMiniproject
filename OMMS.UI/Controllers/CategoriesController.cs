@@ -37,7 +37,7 @@ namespace OMMS.UI.Controllers
             else if(parentId != null) 
             {
                 var categories = await _categoryRepository.GetAll();
-                foreach (var category in categories.Where(c => c.ParentId == parentId))
+                foreach (var category in categories.Where(c => c.ParentId == parentId).ToList())
                 {
                     models.Add(new CategoryVM
                     {

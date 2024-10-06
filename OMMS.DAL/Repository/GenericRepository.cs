@@ -45,6 +45,7 @@ namespace OMMS.DAL.Repository
 
 		public async Task<IQueryable<T>> GetAll()
 		{
+			
 			return  _dbSet;
 		}
 

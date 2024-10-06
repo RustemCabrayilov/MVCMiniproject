@@ -451,7 +451,8 @@ namespace OMMS.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LoanId");
+                    b.HasIndex("LoanId")
+                        .IsUnique();
 
                     b.ToTable("LoanDetails");
                 });
@@ -793,8 +794,8 @@ namespace OMMS.DAL.Migrations
             modelBuilder.Entity("OMMS.DAL.Entities.LoanDetail", b =>
                 {
                     b.HasOne("OMMS.DAL.Entities.Loan", "Loan")
-                        .WithMany()
-                        .HasForeignKey("LoanId")
+                        .WithOne("LoanDetail")
+                        .HasForeignKey("OMMS.DAL.Entities.LoanDetail", "LoanId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -899,6 +900,8 @@ namespace OMMS.DAL.Migrations
 
             modelBuilder.Entity("OMMS.DAL.Entities.Loan", b =>
                 {
+                    b.Navigation("LoanDetail");
+
                     b.Navigation("LoanItems");
 
                     b.Navigation("Payments");

@@ -5,21 +5,19 @@
 }
 <div class="container-fluid">
 	<div class="container">
-		<div class="d-flex justify-content-end mb-3">  @Html.ActionLink("Add", "Create", "Loans", null, new { @class = "btn btn-primary" })</div>
 
 		<table class="table table-striped">
 			<thead>
 				<tr>
 					<th scope="col">Id</th>
 					<th scope="col">Title</th>
-					<th scope="col">Status</th>
-					<th scope="col">Employee</th>
-					<th scope="col">Monthly Price</th>
-					<th scope="col">Total Price</th>
+					<th scope="col">Date</th>
+					<th scope="col">Payment Type</th>
+					<th scope="col">Amount</th>
+					<th scope="col">Current Amount</th>
 					<th scope="col">Terms</th>
 					<th scope="col">Address</th>
 					<th scope="col">Customer</th>
-					<th scope="col">Operation</th>
 				</tr>
 			</thead>
 
@@ -29,19 +27,13 @@
 					<tr>
 						<th scope="row">@item.Id</th>
 						<td>@item.Loan.Title</td>
-						<td>@item.Amount</td>
 						<td>@item.Date</td>
-						<th scope="row">@item.Loan.MonthlyPrice @item.Loan.TotalPrice</th>
+						<td>@item.PaymentType</td>
+						<td>@item.Amount  <i class="fa-solid fa-dollar-sign"></i></td>
+						<th scope="row">@item.LoanDetail.CurrentAmount <i class="fa-solid fa-dollar-sign"></i></th>
 						<th scope="row">@item.Loan.Terms</th>
-						<td>@item.</td>
 						<td>@item.Customer.Address</td>
 						<th scope="row">@item.Customer.Name @item.Customer.Surname</th>
-
-						<td>
-							<a class="btn btn-warning" asp-area="admin" asp-controller="Payments" asp-action="Create" asp-route-id="@item.Id">
-								<i class="fa-regular fa-credit-card"></i>
-							</a>
-						</td>
 					</tr>
 				}
 			</tbody>

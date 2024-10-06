@@ -49,7 +49,7 @@ namespace OMMS.UI.Controllers
                     var signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, model.Persistent, false);
                     if (signInResult.Succeeded)
                     {
-
+                        _toastr.AddSuccessToastMessage($"Welcome {user.UserName}");
                         return RedirectToAction("Index", "Merchants");
                     }
                 }

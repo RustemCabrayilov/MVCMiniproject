@@ -1,8 +1,8 @@
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: poppins;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: nunito;
 }
 
 .product-details {
@@ -44,26 +44,13 @@
       font-weight: bold;
     }
   }
-  & .qr-code {
-    border: 1px solid gray;
-    width: 250px;
-    height: 250px;
-    margin-top: 30px;
-    & img {
-      width: 100%;
-      height: 100%;
-    }
-  }
 }
 .related-products{
   border-top: 1px solid gray;
   margin-top: 20px;
   & h4{
     margin-top: 20px;
-    font-size: 28px;
+    font-size: 26px;
     font-weight: bold;
   }
-}
-.slide-part{
-  height: 100vh;
 }

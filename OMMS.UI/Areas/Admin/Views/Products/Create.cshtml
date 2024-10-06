@@ -23,7 +23,7 @@
             <div class="form-group">
                 <label asp-for="CategoryId" class="control-label">Categories</label>
                 <select asp-for="CategoryId"
-                        class="form-control"
+                        class="formbold-form-select form-control"
                         asp-items="@(new SelectList(Model.Categories, nameof(Model.Id), nameof(Model.Name)))">
                     <option>Please select one</option>
                 </select>
@@ -32,9 +32,9 @@
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label asp-for="BranchId" class="control-label">Categories</label>
+                <label asp-for="BranchId" class="control-label">Branchs</label>
                 <select asp-for="BranchId"
-                        class="form-control"
+                        class="formbold-form-select form-control"
                         asp-items="@(new SelectList(Model.Branchs, nameof(Model.Id), nameof(Model.Name)))">
                     <option>Please select one</option>
                 </select>

@@ -44,7 +44,7 @@
 			<div class="form-group">
 				<label asp-for="UserId" class="control-label">Users</label>
 				<select asp-for="UserId"
-						class="form-control">
+						class="formbold-form-select form-control">
 					@foreach (var item in Model.Users)
 					{
 						<option value="@item.Id">@item.UserName</option>

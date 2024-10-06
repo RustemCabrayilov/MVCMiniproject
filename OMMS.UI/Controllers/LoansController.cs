@@ -15,6 +15,7 @@ namespace OMMS.UI.Controllers
 		private readonly UserManager<AppUser> _userManager;
 		private readonly IGenericRepository<Loan> _loanRepository;
 		private readonly IGenericRepository<LoanItem> _loanItemRepository;
+		private readonly IGenericRepository<LoanDetail> _loanDetailRepository;
 		private readonly IGenericRepository<Customer> _customerRepository;
 		private readonly IGenericRepository<Product> _productRepository;
 		private readonly IEmailService _emailService;
@@ -23,7 +24,8 @@ namespace OMMS.UI.Controllers
 			IGenericRepository<Customer> customerRepository,
 			IGenericRepository<Product> productRepository,
 			IGenericRepository<LoanItem> loanItemRepository,
-			IEmailService emailService)
+			IEmailService emailService,
+			IGenericRepository<LoanDetail> loanDetailRepository)
 		{
 			_loanRepository = loanRepository;
 			_userManager = userManager;
@@ -31,6 +33,7 @@ namespace OMMS.UI.Controllers
 			_productRepository = productRepository;
 			_loanItemRepository = loanItemRepository;
 			_emailService = emailService;
+			_loanDetailRepository = loanDetailRepository;
 		}
 
 		public async Task<IActionResult> Index()
@@ -80,10 +83,7 @@ namespace OMMS.UI.Controllers
 				int term = (int)item;
 				model.TermList.Add(term);
 			}
-
-
-
-
+			ViewBag.BackUrl = Request.Headers["Referer"].ToString();
 			return View(model);
 		}
 		[HttpPost]
@@ -93,6 +93,7 @@ namespace OMMS.UI.Controllers
 			var product = await _productRepository.Get(model.ProductId);
 			decimal monthlyPrice = (product.Price / model.Terms) * (decimal)1.05;
 			decimal totalPrice = monthlyPrice * model.Terms;
+		
 			Loan loan = new()
 			{
 				Title = $"{product.Name}-{product.Model}-{product.Brand}-{model.Terms}months-{model.CustomerId}",
@@ -113,12 +114,33 @@ namespace OMMS.UI.Controllers
 				Count = count,
 				Price = price
 			};
+			LoanDetail loanDetail = new()
+			{
+				LoanId = loan.Id,
+				CurrentAmount = totalPrice,
+			};
+		
 			var user = await _userManager.GetUserAsync(User);
 			string url = Url.Action("Create", "Payments", new { userId = userId, loanId = loan.Id }, HttpContext.Request.Scheme);
 			await _emailService.SendPaymentEmail(url, user.Email, loan);
 			await _loanItemRepository.Create(loanItem);
 			await _loanItemRepository.SaveAsync();
+			await _loanDetailRepository.Create(loanDetail);
+			await _loanDetailRepository.SaveAsync();
+		
 			return RedirectToAction("Details", "Products", new { Id = product.Id });
+		}
+		public async Task<IActionResult> Details(int Id)
+		{
+			var loan = await _loanRepository.Get(Id);
+			var loanDetails = await _loanDetailRepository.GetAll();
+			var loanDetail = loanDetails.FirstOrDefault(ld => ld.LoanId == loan.Id);
+			LoanDetailVM model = new()
+			{
+				Loan = loan,
+				CurrentAmount = loanDetail.CurrentAmount
+			};
+			return PartialView("Details", model);
 		}
 	}
 }

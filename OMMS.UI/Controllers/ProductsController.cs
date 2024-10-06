@@ -25,11 +25,12 @@ namespace OMMS.UI.Controllers
 			_merchantRepository = merchantRepository;
 		}
 
-		public async Task<IActionResult> Index(int? categoryId, int? merchantId)
+		public async Task<IActionResult> Index(int? categoryId, int? merchantId,int branchId)
 		{
 			List<ProductVM> models = new();
 			var products = (await _productRepository.GetAll()).ToList();
 			var productCategory = products.Where(p => p.CategoryId == categoryId).ToList();
+			var branchProducts = products.Where(p => p.BranchId == branchId).ToList();
 			var productMerchant = new List<ProductVM>();
 			if (merchantId != null)
 			{
@@ -60,11 +61,23 @@ namespace OMMS.UI.Controllers
 					});
 				}
 			}
-			else if (categoryId == null && merchantId == null)
+			else if (branchId != 0)
+			{
+				foreach (var product in branchProducts)
+				{
+					var category = await _categoryRepository.Get(product.Id);
+					models.Add(new()
+					{
+						Id = product.Id,
+						Name = product.Name,
+						Thumbnail = product.Thumbnail,
+					});
+				}
+			}
+			else if (categoryId == null && merchantId == null&&branchId==0)
 			{
 				foreach (var product in products)
 				{
-					var category = await _categoryRepository.Get(product.Id);
 					models.Add(new()
 					{
 						Id = product.Id,
@@ -80,7 +93,24 @@ namespace OMMS.UI.Controllers
 			var product = await _productRepository.Get(Id, "ProductImages");
 			var category = await _categoryRepository.Get(product.CategoryId);
 			var branch = await _branchRepository.Get(product.BranchId);
-			ProductVM model = new()
+			List<ProductVM> relatedProducts= new();
+			var products=await _productRepository.GetAll();
+			var relatedProductList = products.Where(rp => rp.CategoryId == product.CategoryId || rp.Brand == product.Brand).ToList();
+
+			foreach (var item in relatedProductList)
+            {
+				if (item.Id != Id)
+				{
+					relatedProducts.Add(new()
+					{
+						Id = item.Id,
+						Name = item.Name,
+						Thumbnail = item.Thumbnail,
+					});
+				}
+			
+            }
+            ProductVM model = new()
 			{
 				Id = product.Id,
 				Name = product.Name,
@@ -93,7 +123,8 @@ namespace OMMS.UI.Controllers
 				Brand = product.Brand,
 				Model = product.Model,
 				Thumbnail = product.Thumbnail,
-				ProductImages = product.ProductImages.ToList()
+				ProductImages = product.ProductImages.ToList(),
+				RelatedProducts=relatedProducts
 			};
 			return View(model);
 		}

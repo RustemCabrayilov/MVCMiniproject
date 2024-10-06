@@ -20,6 +20,7 @@ namespace OMMS.UI.Models
         public IFormFile[] ImageFiles { get; set; }
         public string Thumbnail { get; set; }
         public List<ProductImage> ProductImages { get; set; }
+        public List<ProductVM> RelatedProducts { get; set; }
 
     }
 }

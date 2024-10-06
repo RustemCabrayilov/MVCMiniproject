@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NuGet.ContentModel;
 using OMMS.DAL.Entities;
 using OMMS.DAL.Enums;
 using OMMS.DAL.Repository.Interface;
@@ -19,7 +20,9 @@ namespace OMMS.UI.Areas.Admin.Controllers
 		private readonly IGenericRepository<Employee> _employeeRepository;
 		private readonly IGenericRepository<Product> _productRepository;
 		private readonly IGenericRepository<LoanItem> _loanItemRepository;
+		private readonly IGenericRepository<LoanDetail> _loanDetailRepository;
 		private readonly IGenericRepository<Branch> _branchRepository;
+		private readonly IGenericRepository<Payment> _paymentRepository;
 		private readonly UserManager<AppUser> _userManager;
 
 		public LoansController(IGenericRepository<Loan> loanRepository,
@@ -28,7 +31,9 @@ namespace OMMS.UI.Areas.Admin.Controllers
 			IGenericRepository<Product> productRepository,
 			IGenericRepository<LoanItem> loanItemRepository,
 			UserManager<AppUser> userManager,
-			IGenericRepository<Branch> branchRepository)
+			IGenericRepository<Branch> branchRepository,
+			IGenericRepository<Payment> paymentRepository,
+			IGenericRepository<LoanDetail> loanDetailRepository)
 		{
 			_loanRepository = loanRepository;
 			_customerRepository = customerRepository;
@@ -37,6 +42,8 @@ namespace OMMS.UI.Areas.Admin.Controllers
 			_loanItemRepository = loanItemRepository;
 			_userManager = userManager;
 			_branchRepository = branchRepository;
+			_paymentRepository = paymentRepository;
+			_loanDetailRepository = loanDetailRepository;
 		}
 
 		public async Task<IActionResult> Index()
@@ -97,10 +104,12 @@ namespace OMMS.UI.Areas.Admin.Controllers
 				EmployeeId = model.EmployeeId,
 				CustomerId = model.CustomerId,
 				Status = Status.Accept,
-				UpdateDate=DateTime.Now,
+				UpdateDate = DateTime.Now,
 			};
 			int count = model.Count;
 			decimal price = count * totalPrice;
+			await _loanRepository.Create(loan);
+			await _loanRepository.SaveAsync();
 			LoanItem loanItem = new()
 			{
 				LoanId = loan.Id,
@@ -108,14 +117,20 @@ namespace OMMS.UI.Areas.Admin.Controllers
 				Count = count,
 				Price = price
 			};
+			LoanDetail loanDetail = new()
+			{
+				LoanId = loan.Id,
+				CurrentAmount = totalPrice
+			};
 			product.Count += loanItem.Count;
 			product.Count -= count;
 			_productRepository.Update(product);
 			_productRepository.Save();
-			await _loanRepository.Create(loan);
-			await _loanRepository.SaveAsync();
+		
 			await _loanItemRepository.Create(loanItem);
 			await _loanItemRepository.SaveAsync();
+			await _loanDetailRepository.Create(loanDetail);
+			await _loanDetailRepository.SaveAsync();
 			return RedirectToAction("Index");
 		}
 		public async Task<IActionResult> Edit(int Id)
@@ -134,10 +149,12 @@ namespace OMMS.UI.Areas.Admin.Controllers
 				EmployeeId = loan.EmployeeId,
 				Employees = employees,
 				ProductId = loanItem.ProductId,
+				Count = customers.Count,
 				Products = products,
 				Terms = loan.Terms,
 				TermList = new(),
 				Statuses = new()
+
 			};
 			foreach (var item in Enum.GetValues(typeof(Terms)))
 			{
@@ -156,6 +173,8 @@ namespace OMMS.UI.Areas.Admin.Controllers
 			var loan = await _loanRepository.Get(model.Id != 0 ? model.Id : id);
 			var loanItems = await _loanItemRepository.GetAll();
 			var loanItem = loanItems.FirstOrDefault(li => li.LoanId == loan.Id);
+			var loanDetails = await _loanDetailRepository.GetAll();
+			var loanDetail = loanDetails.FirstOrDefault(ld => ld.LoanId == loan.Id);
 			var product = await _productRepository.Get(model.ProductId);
 			decimal monthlyPrice = (product.Price / model.Terms) * (decimal)1.05;
 			decimal totalPrice = monthlyPrice * model.Terms;
@@ -168,28 +187,22 @@ namespace OMMS.UI.Areas.Admin.Controllers
 			loan.Status = model.Status;
 			int count = model.Count;
 			decimal price = count * totalPrice;
-
-			loanItem.LoanId = loan.Id;
+			if (model.Status == Status.Accept)
+			{
+				product.Count += loanItem.Count;
+				product.Count -= count;
+			}
 			loanItem.ProductId = model.ProductId;
 			loanItem.Count = count;
 			loanItem.Price = price;
 			loanItem.UpdateDate = DateTime.Now;
-			if (assess == "Accept")
-			{
-				loan.Status = Status.Accept;
-			}
-			else if (assess == "Reject")
-			{
-				loan.Status = Status.Reject;
-			}
-			product.Count += loanItem.Count;
-			product.Count -= count;
 			_productRepository.Update(product);
-			_loanRepository.Save();
+			_productRepository.Save();
 			_loanRepository.Update(loan);
 			_loanRepository.Save();
 			_loanItemRepository.Update(loanItem);
 			_loanItemRepository.Save();
+
 			return RedirectToAction("Index");
 		}
 		public async Task<IActionResult> Delete(int Id)
@@ -215,12 +228,12 @@ namespace OMMS.UI.Areas.Admin.Controllers
 		public async Task<IActionResult> Delete(LoanVM model)
 		{
 			var loan = await _loanRepository.Get(model.Id);
-			var loanItems = await _loanItemRepository.GetAll();
-			var loanItem = loanItems.FirstOrDefault(l => l.LoanId == loan.Id);
+			var payments = await _paymentRepository.GetAll();
+			var payment = payments.FirstOrDefault(p => p.LoanId == loan.Id);
+			_paymentRepository.Remove(payment.Id);
+			_loanRepository.Save();
 			_loanRepository.Remove(loan.Id);
 			_loanRepository.Save();
-			_loanItemRepository.Remove(loanItem.Id);
-			_loanItemRepository.Save();
 			return RedirectToAction("Index");
 		}
 		public async Task<IActionResult> Assess(int? loanId)
@@ -230,8 +243,9 @@ namespace OMMS.UI.Areas.Admin.Controllers
 			string userId = _userManager.GetUserId(User);
 			var employees = await _employeeRepository.GetAll();
 			var employee = employees.ToList().FirstOrDefault(e => e.AppUserId == userId);
-			var loanItem = await _loanItemRepository.GetAll();
-			int productId = loanItem.FirstOrDefault(p => p.LoanId == loanId).ProductId;
+			var loanItems = await _loanItemRepository.GetAll();
+			var loanItem = loanItems.FirstOrDefault(li => li.LoanId == loan.Id);
+			int productId = loanItems.FirstOrDefault(p => p.LoanId == loanId).ProductId;
 			var product = await _productRepository.Get(productId, "Branch");
 			LoanVM model = new()
 			{
@@ -246,8 +260,36 @@ namespace OMMS.UI.Areas.Admin.Controllers
 				MonthlyPrice = loan.MonthlyPrice,
 				TotalPrice = loan.TotalPrice,
 				Status = loan.Status,
+				Count = loanItem.Count
 			};
+
+
 			return View(model);
+		}
+		[HttpPost]
+		public async Task<IActionResult> Assess(LoanVM model, int Id)
+		{
+			var loan = await _loanRepository.Get(model.Id != 0 ? model.Id : Id);
+			var loanItems = await _loanItemRepository.GetAll();
+			var loanItem = loanItems.FirstOrDefault(li => li.LoanId == loan.Id);
+			var product = await _productRepository.Get(model.ProductId);
+			loan.Status = model.Status;
+			loan.UpdateDate = DateTime.Now;
+			loan.EmployeeId = model.EmployeeId;
+			if (model.Status == Status.Accept)
+			{
+				product.Count -= loanItem.Count;
+				product.UpdateDate = DateTime.Now;
+			}
+			else if (model.Status == Status.Reject)
+			{
+				loan.Status = Status.Reject;
+			}
+			_productRepository.Update(product);
+			_loanRepository.Save();
+			_loanRepository.Update(loan);
+			_loanRepository.Save();
+			return RedirectToAction("Index");
 		}
 	}
 }

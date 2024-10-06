@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OMMS.DAL.Entities;
 using OMMS.DAL.Enums;
@@ -8,6 +9,7 @@ using System.Diagnostics;
 namespace OMMS.UI.Area.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles ="Admin,Employee")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

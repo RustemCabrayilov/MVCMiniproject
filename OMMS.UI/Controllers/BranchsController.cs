@@ -8,7 +8,6 @@ using OMMS.UI.Models;
 
 namespace OMMS.UI.Controllers
 {
-	[Authorize(Roles ="Merchant,Admin")]
 	public class BranchsController : Controller
 	{
 		private readonly IGenericRepository<Branch> _branchRepository;
@@ -24,12 +23,25 @@ namespace OMMS.UI.Controllers
 			_userManager = userManager;
 		}
 
-		public IActionResult Index()
+		public async Task<IActionResult> Index(int? merchantId)
 		{
-
-			return View();
+			var branchs= await _branchRepository.GetAll();
+			var branchList =branchs.Where(b=>b.MerchantId==merchantId);
+			List<BranchVM> models = new();
+            foreach (var item in branchList.ToList())
+            {
+				models.Add(new()
+				{
+					Id = item.Id,
+					Name= item.Name,
+				});
+            }
+            return View(models);
 		}
-		public async Task<IActionResult> Create()
+
+        [Authorize(Roles = "Merchant,Admin")]
+
+        public async Task<IActionResult> Create()
 		{
 			string userId = _userManager.GetUserId(User);
 			var merchants = await _merchantRepository.GetAll();
