@@ -10,6 +10,7 @@ namespace OMMS.UI.Models
         public IList<string> Roles { get; set; }
         public IList<AppRole> RoleList { get; set; }
         public string PhoneNumber { get; set; }
+        public string? ConnectionId { get; set; }
 
     }
 }

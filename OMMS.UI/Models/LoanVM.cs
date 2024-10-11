@@ -3,7 +3,7 @@ using OMMS.DAL.Enums;
 
 namespace OMMS.UI.Models
 {
-    public class LoanVM
+    public class LoanVM:BaseEntity
     {
         public int Id { get; set; }
         public string Title { get; set; }
@@ -24,5 +24,6 @@ namespace OMMS.UI.Models
         public int ProductId { get; set; }
         public Product Product { get; set; }
         public List<Product> Products { get; set; }
+        public LoanDetailVM LoanDetail { get; set; }
     }
 }

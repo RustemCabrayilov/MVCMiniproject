@@ -9,5 +9,6 @@ namespace OMMS.DAL.Entities
 {
     public class AppUser:IdentityUser
     {
+        public string? ConnectionId { get; set; }
     }
 }

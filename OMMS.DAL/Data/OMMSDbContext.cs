@@ -27,6 +27,7 @@ namespace OMMS.DAL.Data
         public DbSet<Merchant> Merchants { get; set; }
         public DbSet<Product> Products { get; set; }
 		public DbSet<Payment> Payments { get; set; }
+		public DbSet<Slider> Sliders { get; set; }
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{

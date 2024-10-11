@@ -31,12 +31,15 @@ namespace OMMS.UI.Controllers
 		public async Task<IActionResult> Details()
 		{
 			string userId = _userManager.GetUserId(User);
-			if (userId == null)
+			var customers =await _customerRepository.GetAll();
+			var customer = customers.FirstOrDefault(c=>c.AppUserId==userId);
+			if (userId == null||customer==null)
 			{
-				return RedirectToAction("LogIn","Account");
+				_toastr.AddWarningToastMessage("You haven't registered as a customer");
+				return RedirectToAction("Create","Customers");
 			}
 			var user = await _userManager.FindByIdAsync(userId);
-			var customer = (await _customerRepository.GetAll()).FirstOrDefault(c => c.AppUserId == userId);
+			/*var customer = (await _customerRepository.GetAll()).FirstOrDefault(c => c.AppUserId == userId);*/
 			var loans = (await _loanRepository.GetAll()).Where(l => l.CustomerId == customer.Id && l.Status == Status.Accept).ToList();
 			List<LoanItemVM> LoanItemModels = new();
 			foreach (var loan in loans)
@@ -113,28 +116,34 @@ namespace OMMS.UI.Controllers
 		public async Task<IActionResult> Create()
 		{
 
-			var userId = _userManager.GetUserId(User);
+/*			var userId = _userManager.GetUserId(User);
 			if(userId == null)
 			{
 				_toastr.AddWarningToastMessage("You havent registered  as a user");
 				return RedirectToAction("LogIn","Account");
-			}
-			CustomerVM model = new()
+			}*/
+/*			CustomerVM model = new()
 			{
 				UserId = userId,
-			};
-			return View(model);
+			};*/
+			return View();
 		}
 		[HttpPost]
 		public async Task<IActionResult> Create(CustomerVM model)
 		{
+			var userId = _userManager.GetUserId(User);
+			if (userId == null)
+			{
+				_toastr.AddWarningToastMessage("You haven't registered  as a user");
+				return RedirectToAction("LogIn", "Account");
+			}
 			Customer customer = new()
 			{
 				Name = model.Name,
 				Surname = model.Surname,
 				Occupation = model.Occupation,
 				Address = model.Address,
-				AppUserId = model.UserId,
+				AppUserId = userId,
 			};
 			await _customerRepository.Create(customer);
 			await _customerRepository.SaveAsync();

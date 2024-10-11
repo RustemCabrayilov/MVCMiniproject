@@ -9,6 +9,7 @@
 	<div class="row">
 		<div class="col-md-6">
 			<div class="form-group">
+				@Html.HiddenFor(l=>l.EmployeeId)
 				<label asp-for="Title" class="control-label"></label>
 				<input asp-for="Title" class="form-control" />
 				<span asp-validation-for="Title" class="text-danger"></span>
@@ -41,17 +42,6 @@
 					<option>Please select one</option>
 				</select>
 				<span asp-validation-for="Terms" class="text-danger"></span>
-			</div>
-		</div>
-		<div class="col-md-6">
-			<div class="form-group">
-				<label asp-for="EmployeeId" class="formbold-form-label">
-					Employee
-				</label>
-				<select required asp-for="EmployeeId" class="formbold-form-select form-control" asp-items="@(new SelectList(Model.Employees,nameof(Model.Id),"Name"))">
-					<option>Please select one</option>
-				</select>
-				<span asp-validation-for="EmployeeId" class="text-danger"></span>
 			</div>
 		</div>
 			<div class="col-md-6">

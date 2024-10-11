@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FluentValidation;
+using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using NToastNotify;
 using OMMS.DAL.Entities;
 using OMMS.DAL.Repository.Interface;
 using OMMS.UI.Models;
@@ -13,13 +16,19 @@ namespace OMMS.UI.Controllers
 		private readonly IGenericRepository<Employee> _employeeRepository;
 		private readonly IGenericRepository<Branch> _branchRepository;
 		private readonly UserManager<AppUser> _userManager;
+		private readonly IToastNotification _toastr;
+		private readonly IValidator<EmployeeVM> _validator;
 		public EmployeesController(IGenericRepository<Employee> employeeRepository,
 			IGenericRepository<Branch> branchRepository,
-			UserManager<AppUser> userManager)
+			UserManager<AppUser> userManager,
+			IToastNotification toastr,
+			IValidator<EmployeeVM> validator)
 		{
 			_employeeRepository = employeeRepository;
 			_branchRepository = branchRepository;
 			_userManager = userManager;
+			_toastr = toastr;
+			_validator = validator;
 		}
 
 		public IActionResult Index()
@@ -41,17 +50,29 @@ namespace OMMS.UI.Controllers
 		[HttpPost]
 		public async Task<IActionResult> Create(EmployeeVM model)
 		{
-			Employee employee = new()
+			var result =await _validator.ValidateAsync(model);
+			if (result.IsValid)
 			{
-				Name = model.Name,
-				Surname = model.Surname,
-				Position = model.Position,
-				BranchId = model.BranchId,
-				AppUserId = model.AppUserId,
-			};
-			await _employeeRepository.Create(employee);
-			await _employeeRepository.SaveAsync();
-			return RedirectToAction("Index", "Home");
+				Employee employee = new()
+				{
+					Name = model.Name,
+					Surname = model.Surname,
+					Position = model.Position,
+					BranchId = model.BranchId,
+					AppUserId = model.AppUserId,
+				};
+				await _employeeRepository.Create(employee);
+				await _employeeRepository.SaveAsync();
+				_toastr.AddSuccessToastMessage("Employee added successfully");
+				return RedirectToAction("Index", "Merchants");
+			}
+			else
+			{
+				result.AddToModelState(ModelState);
+				var branchs =await _branchRepository.GetAll();
+				model.Branchs=branchs.ToList();
+				return View(model);
+			}
 		}
 	}
 }

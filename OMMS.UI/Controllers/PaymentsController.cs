@@ -39,25 +39,25 @@ namespace OMMS.UI.Controllers
 			string userId = _userManager.GetUserId(User);
 			var customers = await _customerRepository.GetAll();
 			var customer = customers.FirstOrDefault(c => c.AppUserId == userId);
-			if (customer==null)
+			if (customer == null)
 			{
 				_toastr.AddWarningToastMessage("You havent registered  as a customer");
-				return RedirectToAction("Create","Customers");
+				return RedirectToAction("Create", "Customers");
 			}
 			var customerPayments = payments.Where(c => c.CustomerId == customer.Id);
 			foreach (var item in customerPayments.ToList())
 			{
 				var loan = await _loanRepository.Get(item.LoanId);
 				var loanDetails = await _loanDetailRepository.GetAll();
-				var loanDetail = loanDetails.FirstOrDefault(c => c.LoanId ==loan.Id );
+				var loanDetail = loanDetails.FirstOrDefault(c => c.LoanId == loan.Id);
 				models.Add(new PaymentVM
 				{
 					Id = item.Id,
 					Amount = item.Amount,
 					Date = item.PaymentDate,
 					Loan = loan,
-					Customer=customer,
-					LoanDetail=loanDetail
+					Customer = customer,
+					LoanDetail = loanDetail
 				});
 			}
 			return View(models);
@@ -76,7 +76,7 @@ namespace OMMS.UI.Controllers
 				LoanId = loan.Id,
 				Loan = loan,
 				CustomerId = customer.Id,
-				CurrentAmount=loanDetail.CurrentAmount,
+				CurrentAmount = loanDetail.CurrentAmount,
 				PaymentTypes = paymentTypes
 			};
 			foreach (var item in Enum.GetValues(typeof(PaymentType)))
@@ -89,24 +89,30 @@ namespace OMMS.UI.Controllers
 		public async Task<IActionResult> Create(PaymentVM model)
 		{
 
-			Payment payment = new()
+			if (ModelState.IsValid)
 			{
-				Amount = model.Amount,
-				PaymentDate = DateTime.Now,
-				PaymentType = model.PaymentType,
-				LoanId = model.LoanId,
-				CustomerId = model.CustomerId,
-			};
-			var loan = await _loanRepository.Get(model.LoanId);
-			var loanDetails = await _loanDetailRepository.GetAll();
-			var loanDetail = loanDetails.FirstOrDefault(ld => ld.LoanId == loan.Id);
-			loanDetail.LoanId = loan.Id;
-			loanDetail.CurrentAmount -= model.Amount;
-			await _paymentRepository.Create(payment);
-			await _paymentRepository.SaveAsync();
-			_loanDetailRepository.Update(loanDetail);
-			_loanDetailRepository.Save();
-			return RedirectToAction("Index", "Merchants");
+				Payment payment = new()
+				{
+					Amount = model.Amount,
+					PaymentDate = DateTime.Now,
+					PaymentType = model.PaymentType,
+					LoanId = model.LoanId,
+					CustomerId = model.CustomerId,
+				};
+				var loan = await _loanRepository.Get(model.LoanId);
+				var loanDetails = await _loanDetailRepository.GetAll();
+				var loanDetail = loanDetails.FirstOrDefault(ld => ld.LoanId == loan.Id);
+				loanDetail.LoanId = loan.Id;
+				loanDetail.CurrentAmount -= model.Amount;
+				await _paymentRepository.Create(payment);
+				await _paymentRepository.SaveAsync();
+				_loanDetailRepository.Update(loanDetail);
+				_loanDetailRepository.Save();
+				_toastr.AddSuccessToastMessage("Payment done successfully");
+				return RedirectToAction("Index", "Merchants");
+			}
+			_toastr.AddWarningToastMessage("Make sure your inputs are correct");
+			return View(model);
 		}
 	}
 }

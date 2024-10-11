@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NToastNotify;
 using OMMS.DAL.Entities;
 using OMMS.DAL.Enums;
 using OMMS.DAL.Repository.Interface;
@@ -17,18 +18,21 @@ namespace OMMS.UI.Area.Admin.Controllers
         private readonly IGenericRepository<Loan> _loanRepository;
         private readonly IGenericRepository<Customer> _customerRepository;
         private readonly IGenericRepository<Employee> _employeeRepository;
+        private readonly IToastNotification _toastr;
 
 		public HomeController(ILogger<HomeController> logger,
 			IGenericRepository<Loan> loanRepository,
 			IGenericRepository<Customer> customerRepository,
 			IGenericRepository<Employee> employeeRepository,
-			IGenericRepository<Merchant> merchantRepository)
+			IGenericRepository<Merchant> merchantRepository,
+			IToastNotification toastr)
 		{
 			_logger = logger;
 			_loanRepository = loanRepository;
 			_customerRepository = customerRepository;
 			_employeeRepository = employeeRepository;
 			_merchantRepository = merchantRepository;
+			_toastr = toastr;
 		}
 
 		public async Task<IActionResult> Index()
@@ -44,7 +48,8 @@ namespace OMMS.UI.Area.Admin.Controllers
                 TerminalNo = merchant.TerminalNo,
                 });
             }
-            return View(models);
+
+			return View(models);
         }
 
         public IActionResult Privacy()

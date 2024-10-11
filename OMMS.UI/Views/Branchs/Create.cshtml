@@ -7,6 +7,7 @@
 		
 		<form asp-action="Create">
 			<div class="formbold-input-group">
+				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 				@Html.HiddenFor(m => m.AppUserId)
 				<label asp-for="Name" class="formbold-form-label"> Branch Name </label>
 				<input asp-for="Name"
@@ -25,7 +26,7 @@
 
 			<div class="formbold-input-group">
 				<label asp-for="Address" class="formbold-form-label"></label>
-				<input asp-for="Address" placeholder="Enter Terminal No"
+				<input asp-for="Address" placeholder="Enter Address"
 					   class="formbold-form-input form-control" />
 				<span asp-validation-for="Address" class="text-danger"></span>
 

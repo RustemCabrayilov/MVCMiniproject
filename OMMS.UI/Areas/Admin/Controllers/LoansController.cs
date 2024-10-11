@@ -72,12 +72,14 @@ namespace OMMS.UI.Areas.Admin.Controllers
 		public async Task<IActionResult> Create()
 		{
 			var customers = (await _customerRepository.GetAll()).ToList();
-			var employees = (await _employeeRepository.GetAll()).ToList();
+			var employees = await _employeeRepository.GetAll();
 			var products = (await _productRepository.GetAll()).ToList();
-			LoanVM model = new()
+			string userId =  _userManager.GetUserId(User);
+			var employee =employees.FirstOrDefault();
+				LoanVM model = new()
 			{
 				Customers = customers,
-				Employees = employees,
+				EmployeeId=employee.Id,
 				Products = products,
 				TermList = new(),
 
@@ -236,6 +238,7 @@ namespace OMMS.UI.Areas.Admin.Controllers
 			_loanRepository.Save();
 			return RedirectToAction("Index");
 		}
+		[Authorize(Roles ="Employee")]
 		public async Task<IActionResult> Assess(int? loanId)
 		{
 			var loan = await _loanRepository.Get(loanId ?? 0);

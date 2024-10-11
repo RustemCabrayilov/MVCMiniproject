@@ -1,148 +1,4 @@
-﻿@* <header>
-	<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-		<div class="container-fluid">
-			<a class="navbar-brand" asp-area="" asp-controller="Merchants" asp-action="Index">OMMS</a>
-			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-					aria-expanded="false" aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-				<ul class="navbar-nav d-flex flex-grow-1 align-items-center">
-					<li class="nav-item">
-						@if (User.IsInRole("Admin"))
-						{
-							<a class="nav-link text-dark" asp-area="" asp-controller="Merchants" asp-action="Create">Create Merchant</a>
-						}
-					</li>
-					<li class="nav-item">
-						@if (User.IsInRole("Admin,Merchant"))
-						{
-							<a class="nav-link text-dark" asp-area="" asp-controller="Branchs" asp-action="Create">Create Branch</a>
-						}
-					</li>
-					<li class="nav-item">
-						@if (User.IsInRole("Admin,Branch"))
-						{
-							<a class="nav-link text-dark" asp-area="" asp-controller="Employees" asp-action="Create">Create Employee</a>
-
-						}
-					</li>
-					<li class="nav-item">
-						@await Component.InvokeAsync("Category")
-					</li>
-				</ul>
-				<ul class="navbar-nav d-flex flex-grow-1 align-items-center justify-content-end">
-					@if (!User.Identity.IsAuthenticated)
-					{
-						<li class="nav-item">
-							<a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="LogIn">Log In</a>
-
-						</li>
-						<li class="nav-item">
-							<a class="nav-link text-light btn-primary rounded-1" asp-area="" asp-controller="Account" asp-action="SignUp">Sign Up</a>
-						</li>
-					}
-					<li class="nav-item">
-						<a class="nav-link text-dark" asp-area="" asp-controller="Customers" asp-action="Details"><img src="https://admin.ctctaxi.com/assets/images/default-profile-picture.png" width="50px"></a>
-					</li>
-				</ul>
-			</div>
-		</div>
-	</nav>
-</header> *@
-
-
-@* <header id="header" class="site-header header-scrolled position-fixed text-black bg-light">
-	<nav id="header-nav" class="navbar navbar-expand-lg px-3 mb-3">
-		<div class="container-fluid">
-			<a class="navbar-brand" href="/Merchants/Index">
-				<img src="~/templateImages/main-logo.png" class="logo">
-			</a>
-			<button class="navbar-toggler d-flex d-lg-none order-3 p-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#bdNavbar" aria-controls="bdNavbar" aria-expanded="false" aria-label="Toggle navigation">
-				<svg class="navbar-icon">
-					<use xlink:href="#navbar-icon"></use>
-				</svg>
-			</button>
-			<div class="offcanvas offcanvas-end" tabindex="-1" id="bdNavbar" aria-labelledby="bdNavbarOffcanvasLabel">
-				<div class="offcanvas-header px-4 pb-0">
-					<a class="navbar-brand" href="index.html">
-						<img src="~/templateImages/main-logo.png" class="logo">
-					</a>
-					<button type="button" class="btn-close btn-close-black" data-bs-dismiss="offcanvas" aria-label="Close" data-bs-target="#bdNavbar"></button>
-				</div>
-				<div class="offcanvas-body">
-					<ul id="navbar" class="navbar-nav text-uppercase justify-content-end align-items-center flex-grow-1 pe-3">
-
-						<li class="nav-item">
-							<a class="nav-link me-4 active" href="/Merchants/Index">Home</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link me-4" href="/Products/Index">Products</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link me-4" asp-controller="Loans" asp-action="Index">Loan requests</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link me-4" asp-controller="Payments" asp-action="Index">Payments</a>
-						</li>
-						<li class="nav-item">
-							@if (User.IsInRole("Admin"))
-							{
-								<a class="nav-link text-dark" asp-area="" asp-controller="Merchants" asp-action="Create">Create Merchant</a>
-							}
-						</li>
-						<li class="nav-item">
-							@if (User.IsInRole("Admin") || User.IsInRole("Merchant"))
-							{
-								<a class="nav-link text-dark" asp-area="" asp-controller="Branchs" asp-action="Create">Create Branch</a>
-							}
-						</li>
-						<li class="nav-item">
-							@if (User.IsInRole("Admin") || User.IsInRole("Branch"))
-							{
-								<a class="nav-link text-dark" asp-area="" asp-controller="Employees" asp-action="Create">Create Employee</a>
-
-							}
-						</li>
-						<li class="nav-item">
-							@await Component.InvokeAsync("Category")
-						</li>
-						<li class="nav-item">
-							<div class="user-items ps-5">
-								<ul class="d-flex justify-content-end list-unstyled">
-									<li class="search-item pe-3">
-										<a href="#" class="search-button">
-											<svg class="search">
-												<use xlink:href="#search"></use>
-											</svg>
-										</a>
-									</li>
-									<li class="pe-3">
-										@if (!(User.IsInRole("Admin")||User.IsInRole("Employee")))
-										{
-											<a asp-controller="Customers" asp-action="Details">
-												<svg class="user">
-													<use xlink:href="#user"></use>
-												</svg>
-											</a>
-										}
-									</li>
-									<li>
-										<a href="cart.html">
-											<svg class="cart">
-												<use xlink:href="#cart"></use>
-											</svg>
-										</a>
-									</li>
-								</ul>
-							</div>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-	</nav>
-</header> *@
+﻿
 <header id="header" class="site-header">
 
 
@@ -175,14 +31,15 @@
 						<li class="nav-item">
 							<a class="nav-link me-4" href="/Products/Index">Products</a>
 						</li>
+					
 						<li class="nav-item">
-							@if (!(User.IsInRole("Admin") || User.IsInRole("Employee")))
+							@if (!(User.IsInRole("Admin") || User.IsInRole("Employee"))&&User.Identity.IsAuthenticated)
 							{
 								<a class="nav-link me-4" asp-controller="Loans" asp-action="Index">Loan requests</a>
 							}
 						</li>
 						<li class="nav-item">
-							@if (!(User.IsInRole("Admin") || User.IsInRole("Employee")))
+							@if (!(User.IsInRole("Admin") || User.IsInRole("Employee")) && User.Identity.IsAuthenticated)
 							{
 								<a class="nav-link me-4" asp-controller="Payments" asp-action="Index">Payments</a>
 							}
@@ -191,30 +48,33 @@
 						<li class="nav-item">
 							@if (User.IsInRole("Admin"))
 							{
-								<a class="nav-link text-dark" asp-area="" asp-controller="Merchants" asp-action="Create">Create Merchant</a>
+								<a class="nav-link nme-4 text-dark"  asp-area="" asp-controller="Merchants" asp-action="Create">Create Merchant</a>
 							}
 						</li>
 						<li class="nav-item">
 							@if (User.IsInRole("Admin") || User.IsInRole("Merchant"))
 							{
-								<a class="nav-link text-dark" asp-area="" asp-controller="Branchs" asp-action="Create">Create Branch</a>
+								<a class="nav-link me-4 text-dark" asp-area="" asp-controller="Branchs" asp-action="Create">Create Branch</a>
 							}
 						</li>
 						<li class="nav-item">
 							@if (User.IsInRole("Admin") || User.IsInRole("Branch"))
 							{
-								<a class="nav-link text-dark" asp-area="" asp-controller="Employees" asp-action="Create">Create Employee</a>
+								<a class="nav-link me-4 text-dark" asp-area="" asp-controller="Employees" asp-action="Create">Create Employee</a>
 
 							}
 						</li>
 						<li class="nav-item">
 							@await Component.InvokeAsync("Category")
 						</li>
+						<li class="nav-item">
+							<a class="nav-link me-4" href="/Chat/Chat">Contact</a>
+						</li>
 					</ul>
 					<div class="user-items d-flex align-items-center">
 						<ul class="d-flex justify-content-end list-unstyled mb-0">
 							<li class="search-item pe-3">
-								<a href="#" class="search-button">
+								<a  class="search-button">
 									<svg class="search">
 										<use xlink:href="#search"></use>
 									</svg>

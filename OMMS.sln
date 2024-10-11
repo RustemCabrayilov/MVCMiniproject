@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34408.163
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OMMS.DAL", "OMMS.DAL\OMMS.DAL.csproj", "{5E7F4C0A-EFA2-4338-8207-66631B4ACE2F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OMMS.DAL", "OMMS.DAL\OMMS.DAL.csproj", "{5E7F4C0A-EFA2-4338-8207-66631B4ACE2F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OMMS.UI", "OMMS.UI\OMMS.UI.csproj", "{A2C28A28-E75F-4291-BE86-3FC49E152C4E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OMMS.UI", "OMMS.UI\OMMS.UI.csproj", "{A2C28A28-E75F-4291-BE86-3FC49E152C4E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OMMS.SignalR", "OMMS.SignalR\OMMS.SignalR.csproj", "{DFF8960B-2E01-4040-9562-25E00FC83C1F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{A2C28A28-E75F-4291-BE86-3FC49E152C4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A2C28A28-E75F-4291-BE86-3FC49E152C4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A2C28A28-E75F-4291-BE86-3FC49E152C4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFF8960B-2E01-4040-9562-25E00FC83C1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFF8960B-2E01-4040-9562-25E00FC83C1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFF8960B-2E01-4040-9562-25E00FC83C1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFF8960B-2E01-4040-9562-25E00FC83C1F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

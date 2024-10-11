@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OMMS.DAL.Entities;
 using OMMS.DAL.Repository.Interface;
+using OMMS.SignalR.HubServices.Interfaces;
 using OMMS.UI.Models;
 using System.IO;
 
@@ -17,20 +18,23 @@ namespace OMMS.UI.Areas.Admin.Controllers
         private readonly IGenericRepository<Branch> _branchRepository;
         private readonly IGenericRepository<ProductImage> _productImageRepository;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public ProductsController(IGenericRepository<Product> productRepository,
-            IGenericRepository<Category> categoryRepository,
-            IWebHostEnvironment webHostEnvironment,
-            IGenericRepository<Branch> branchRepository,
-            IGenericRepository<ProductImage> productImageRepository)
-        {
-            _productRepository = productRepository;
-            _categoryRepository = categoryRepository;
-            _webHostEnvironment = webHostEnvironment;
-            _branchRepository = branchRepository;
-            _productImageRepository = productImageRepository;
-        }
+        private readonly IProductHubService _productHubService;
+		public ProductsController(IGenericRepository<Product> productRepository,
+			IGenericRepository<Category> categoryRepository,
+			IWebHostEnvironment webHostEnvironment,
+			IGenericRepository<Branch> branchRepository,
+			IGenericRepository<ProductImage> productImageRepository,
+			IProductHubService productHubService)
+		{
+			_productRepository = productRepository;
+			_categoryRepository = categoryRepository;
+			_webHostEnvironment = webHostEnvironment;
+			_branchRepository = branchRepository;
+			_productImageRepository = productImageRepository;
+			_productHubService = productHubService;
+		}
 
-        public async Task<IActionResult> Index()
+		public async Task<IActionResult> Index()
         {
             List<ProductVM> models = new();
             var products = (await _productRepository.GetAll()).ToList();
@@ -67,31 +71,33 @@ namespace OMMS.UI.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(ProductVM productModel)
         {
-            List<ProductImage> productImages = new();
-            foreach (var imageFile in productModel.ImageFiles)
-            {
-                productImages = await UploadImage(imageFile, productImages);
-            }
-            Product product = new()
-            {
-               
-                Name = productModel.Name,
-                CategoryId = productModel.CategoryId,
-                BranchId = productModel.BranchId,
-                Description = productModel.Description,
-                Count = productModel.Count,
-                Price = productModel.Price,
-                Brand = productModel.Brand,
-                Model = productModel.Model,
-                UpdateDate=DateTime.Now,
-            };
-            product.ProductImages = productImages;
-            product.Thumbnail = Path.Combine(productImages[0].Directory, productImages[0].Name);
 
-            await _productRepository.Create(product);
-            await _productRepository.SaveAsync();
-            return RedirectToAction("Index");
+                List<ProductImage> productImages = new();
+                foreach (var imageFile in productModel.ImageFiles)
+                {
+                    productImages = await UploadImage(imageFile, productImages);
+                }
+                Product product = new()
+                {
 
+                    Name = productModel.Name,
+                    CategoryId = productModel.CategoryId,
+                    BranchId = productModel.BranchId,
+                    Description = productModel.Description,
+                    Count = productModel.Count,
+                    Price = productModel.Price,
+                    Brand = productModel.Brand,
+                    Model = productModel.Model,
+                    UpdateDate = DateTime.Now,
+                };
+                product.ProductImages = productImages;
+                product.Thumbnail = Path.Combine(productImages[0].Directory, productImages[0].Name);
+
+                await _productRepository.Create(product);
+                await _productRepository.SaveAsync();
+                await _productHubService.ProductAddedMessage($"{product.Name} added successfully");
+                return RedirectToAction("Index");
+            
         }
         public async Task<List<ProductImage>> UploadImage(IFormFile file, List<ProductImage> productImages)
         {
@@ -171,38 +177,42 @@ namespace OMMS.UI.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(ProductVM productModel, int id)
         {
-   
-            var product = await _productRepository.Get(id, "ProductImages");
-            product.Id = productModel.Id;
-            product.Name = productModel.Name;
-            product.CategoryId = productModel.CategoryId;
-            product.BranchId = productModel.BranchId;
-            product.Description = productModel.Description;
-            product.Count = productModel.Count;
-            product.Price = productModel.Price;
-            product.Brand = productModel.Brand;
-            product.Model = productModel.Model;
-            product.UpdateDate= DateTime.Now;
-            if (productModel.ImageFiles != null)
+
+            if (ModelState.IsValid)
             {
-                List<ProductImage> productImages = new();
-                foreach (var productImage in product.ProductImages)
+                var product = await _productRepository.Get(id, "ProductImages");
+                product.Id = productModel.Id;
+                product.Name = productModel.Name;
+                product.CategoryId = productModel.CategoryId;
+                product.BranchId = productModel.BranchId;
+                product.Description = productModel.Description;
+                product.Count = productModel.Count;
+                product.Price = productModel.Price;
+                product.Brand = productModel.Brand;
+                product.Model = productModel.Model;
+                product.UpdateDate = DateTime.Now;
+                if (productModel.ImageFiles != null)
                 {
-                    DeleteImage(productImage.Name, productImage.Directory);
-                    _productImageRepository.Remove(productImage.Id);
-                    _productImageRepository.Save();
+                    List<ProductImage> productImages = new();
+                    foreach (var productImage in product.ProductImages)
+                    {
+                        DeleteImage(productImage.Name, productImage.Directory);
+                        _productImageRepository.Remove(productImage.Id);
+                        _productImageRepository.Save();
+                    }
+                    product.ProductImages.Clear();
+                    foreach (var imageFile in productModel.ImageFiles)
+                    {
+                        productImages = await UploadImage(imageFile, productImages);
+                    }
+                    product.Thumbnail = Path.Combine(productImages[0].Directory, productImages[0].Name);
+                    product.ProductImages = productImages;
                 }
-                product.ProductImages.Clear();
-                foreach (var imageFile in productModel.ImageFiles)
-                {
-                    productImages = await UploadImage(imageFile, productImages);
-                }
-                product.Thumbnail = Path.Combine(productImages[0].Directory, productImages[0].Name);
-                product.ProductImages = productImages;
+                _productRepository.Update(product);
+                _productRepository.Save();
+                return RedirectToAction("Index");
             }
-            _productRepository.Update(product);
-            _productRepository.Save();
-            return RedirectToAction("Index");
+            return View(productModel);
         }
         public void DeleteImage(string fileName, string folderName)
         {

@@ -70,7 +70,7 @@ namespace OMMS.UI.Services
 			mailBody.AppendFormat("<br />");
 			mailBody.AppendFormat($"<p>Loan take date{loan.CreateDate}</p>");
 			mailBody.AppendFormat("<br />");
-			mailBody.AppendFormat($"a href={url}>Pay your loan</p>");
+			mailBody.AppendFormat($"<a href={url}>Pay your loan</p>");
 
 			mailMessage.Body = mailBody.ToString();
 
